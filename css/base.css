@@ -1,28 +1,62 @@
 @import url('colours.css');
+@import url('fonts.css');
 
 body {
     background-color: var(--gruvbox-light-bg);
     color: var(--gruvbox-light-fg)
     padding: 0;
     margin: 0;
+    font-family: BlexMono;
+}
+
+header, footer {
+    background-color: var(--gruvbox-light-bg-1);
+    border: 2px solid var(--gruvbox-light-bg-1);
 }
 
 header {
     margin: 0;
     padding: 1em;
-    height: 20%;
+    height: 5%;
     width: 100%;
-    border: 1px solid black;
 }
 
 main {
+    margin-top: 5%;
     width: 80%;
     height: 80%;
     margin: 0 auto;
+    border: 1px solid blue;
+    min-height: 100vh;
+}
+
+main article {
+    border: 1px solid pink;
 }
 
 footer {
-    height: 5em;
-    width: 100%
-    border: 1px solid black;
+    padding: 1em;
+    height: 5%;
+    width: 100%;
+}
+
+a, p, span, code, b, em, strong {
+    text-decoration: none;
+    color: var(--gruvbox-light-fg)
+}
+
+
+/* Main header specifics */
+body > header > h1 {
+    text-align: center;
+}
+
+/* navigation bar */
+body > header > nav > ul {
+    list-style: none;
+    display: flex;
+    justify-content: space-between;
+
+    width: 60%;
+    margin: 0 auto;
 }
