@@ -1,48 +1,55 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <title></title>
+        <title> {{ .Title }}</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link href="css/base.css" rel="stylesheet">
+            {{range .Styles}}
+                <link href="{{.}}" rel="stylesheet" type="text/css">
+            {{end}}
     </head>
     <body>
 
         <header>
-            <h1>Things I am currently working on</h1>
-            <nav>
-                <ul>
-                    <li>Learning</li>
-                    <li>Projects</li>
-                    <li>Random</li>
-                </ul>
-            </nav>
+            <h1> {{ .Title }} </h1>
+            <!-- <nav> -->
+            <!--     <ul> -->
+            <!--         <li>Learning</li> -->
+            <!--         <li>Projects</li> -->
+            <!--         <li>Random</li> -->
+            <!--     </ul> -->
+            <!-- </nav> -->
         </header>
 
         <main>
-            Probably something about the nature of the posts
-            some buttons to get to see all posts, tags or whatever
 
-            <a href="posts/test.html">
+            <section>
+                <p>I build this site just to keep myself accountable and motivate me to dive deeper into the stuff that really interests me</p>
+                or something else
+            </section>
+
+            <!-- recent articles -->
+            <section>
+                <a href="posts/test.html">
+                    <article>
+                        <h2>This is about someting</h2>
+                    </article>
+                </a>
+
                 <article>
-                    <h2>This is about someting</h2>
+                    <h2>This is about something</h2>
+
                 </article>
-            </a>
 
-            <article>
-                <h2>This is about something</h2>
-                
-            </article>
+                <article>
+                    <h2>This is about something else</h2>
 
-            <article>
-                <h2>This is about something else</h2>
-                
-            </article>
-            
+                </article>
+            </section>
         </main>
 
         <footer>
-            <h2>some shit</h2>
+            <h3>That is everything</h3>
             <ul>
                 <li>bla</li>
                 <li>bla</li>

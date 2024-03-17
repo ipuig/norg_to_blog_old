@@ -9,11 +9,6 @@ body {
     font-family: BlexMono;
 }
 
-header, footer {
-    background-color: var(--gruvbox-light-bg-1);
-    border: 2px solid var(--gruvbox-light-bg-1);
-}
-
 header {
     margin: 0;
     padding: 1em;
@@ -30,8 +25,12 @@ main {
     min-height: 100vh;
 }
 
-main article {
-    border: 1px solid pink;
+main > section:first-of-type {
+}
+
+main > section:nth-of-type(2) {
+    width: 80%;
+    margin: 0 auto;
 }
 
 footer {
@@ -43,6 +42,10 @@ footer {
 a, p, span, code, b, em, strong {
     text-decoration: none;
     color: var(--gruvbox-light-fg)
+}
+
+p {
+    padding: .5em;
 }
 
 
