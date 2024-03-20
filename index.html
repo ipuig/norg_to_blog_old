@@ -4,52 +4,28 @@
         <title> {{ .Title }}</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-            {{range .Styles}}
+            {{ range .Styles }}
                 <link href="{{.}}" rel="stylesheet" type="text/css">
-            {{end}}
+            {{ end }}
     </head>
     <body>
 
         <header>
             <h1> {{ .Title }} </h1>
-            <!-- <nav> -->
-            <!--     <ul> -->
-            <!--         <li>Learning</li> -->
-            <!--         <li>Projects</li> -->
-            <!--         <li>Random</li> -->
-            <!--     </ul> -->
-            <!-- </nav> -->
         </header>
 
         <main>
-
             <section>
-                <p>I build this site just to keep myself accountable and motivate me to dive deeper into the stuff that really interests me</p>
-                or something else
-            </section>
-
-            <!-- recent articles -->
-            <section>
-                <a href="posts/test.html">
-                    <article>
-                        <h2>This is about someting</h2>
-                    </article>
-                </a>
-
+                {{ range .Posts }}
                 <article>
-                    <h2>This is about something</h2>
-
+                    {{ . }}
                 </article>
-
-                <article>
-                    <h2>This is about something else</h2>
-
-                </article>
+                {{ end }}
             </section>
         </main>
 
         <footer>
-            <h3>That is everything</h3>
+            <h3>Last activity</h3>
             <ul>
                 <li>bla</li>
                 <li>bla</li>
