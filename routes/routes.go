@@ -22,8 +22,14 @@ func Routes() *http.ServeMux {
 
 func HomePage(w http.ResponseWriter, r *http.Request) {
 
-    tmpl := template.Must(template.ParseFiles("index.html"))
-    data := pages.HomeData { Title: "Home", Styles: []string {"resources/css/base.css"} }
+    tmpl := template.Must(template.ParseFiles("layouts/base/index.html"))
+
+
+    table := make(pages.PostRecords)
+    posts := []pages.Post { pages.Example() }
+    table[2024] = posts
+
+    data := pages.HomeData { Title: "Home", Styles: []string {"resources/css/base.css"}, Posts: &table }
     tmpl.Execute(w, data)
 }
 

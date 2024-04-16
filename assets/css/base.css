@@ -3,7 +3,7 @@
 
 body {
     background-color: var(--gruvbox-light-bg);
-    color: var(--gruvbox-light-fg)
+    color: var(--gruvbox-light-fg);
     padding: 0;
     margin: 0;
     font-family: BlexMono;
