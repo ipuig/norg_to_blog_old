@@ -1,10 +1,18 @@
 package main
 
 import (
-	"blog/routes"
-	"net/http"
+    "blog/ipl"
 )
 
+// import (
+// 	"blog/routes"
+// 	"net/http"
+// )
+//
+// func main() {
+//     http.ListenAndServe(":8080", routes.Routes())
+// }
+
 func main() {
-    http.ListenAndServe(":8080", routes.Routes())
+    ipl.AnalyseContent()
 }
