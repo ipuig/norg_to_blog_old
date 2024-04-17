@@ -1,7 +1,7 @@
 package main
 
 import (
-    "blog/ipl"
+	"blog/ipl"
 )
 
 // import (
@@ -14,5 +14,5 @@ import (
 // }
 
 func main() {
-    ipl.AnalyseContent()
+	ipl.AnalyseContent()
 }
