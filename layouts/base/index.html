@@ -4,9 +4,7 @@
         <title> {{ .Title }}</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-            {{ range .Styles }}
-                <link href="{{.}}" rel="stylesheet" type="text/css">
-            {{ end }}
+        <link href="resources/css/base.css" rel="stylesheet" type="text/css">
     </head>
     <body>
 
@@ -14,31 +12,18 @@
             <h1> {{ .Title }} </h1>
         </header>
 
-        {{- range $key, $value := .Posts }}
+        <aside>
+            <span> < </span>  
+        </aside>
+
         <main>
-            <div>
-                <h5> {{ $key }} </h5>
-            </div>
-            {{ range $value }}
-            <section>
-                <article>
-                    <h2>{{ .PostTitle }}</h2>
-                    {{ .Tags }}
-                    {{ range .Sections }}
-                    <section>
-                        <h3> {{ .SectionTitle }} </h3>
-                        {{ range .Tags }}
-
-                            {{ . }}
-
-                        {{ end }}
-                    </section>
-                    {{ end }}
-                </article>
-            </section>
-            {{ end }}
+            hey
         </main>
-        {{- end }}
+
+
+        <aside>
+        <span> > </span>
+        </aside>
 
         <footer>
             <h3>Last activity</h3>

@@ -3,6 +3,7 @@ package ipl
 import (
 	"fmt"
 	"html/template"
+	"log"
 	"strconv"
 	"strings"
 )
@@ -14,7 +15,7 @@ const (
     a; li; div; hgroup; head;
     figure; aside;
     article; section;
-    st
+    st; abs
 )
 
 type Tag interface {
@@ -107,7 +108,7 @@ func wrapSimpleTag(tag int, content string, opts TagOptions) string {
     if tag == img || tag == br || tag == hr {
         sb.WriteString("/>")
     } else {
-        sb.WriteString(">" + strings.TrimSpace(content) + "</" + tname + ">")
+        sb.WriteString(">" + content + "</" + tname + ">")
     }
 
     return sb.String()
@@ -126,6 +127,9 @@ func wrapContainer(tag *TagHTML) string {
     case aside: tname = "aside"
     case head: tname = "hgroup"
     case st: tname = "section"
+    case abs: 
+        tname = "section"
+        tag.TagOptions.Classes = []string {"abstract"}
     }
 
     sb.WriteString("<" + tname)
@@ -141,7 +145,7 @@ func wrapContainer(tag *TagHTML) string {
     sb.WriteString(">\n")
 
     if tag.TagType == st {
-        sb.WriteString("<h3>" + strings.TrimSpace(tag.Text) + "</h3>\n")
+        sb.WriteString("<h2>" + tag.Text + "</h2>\n")
     }
 
     if tag.Children != nil {
@@ -162,6 +166,7 @@ type Date struct {
     Minutes int
 }
 
+
 func (d *Date) Date() string {
     return fmt.Sprintf("%d-%d-%d", d.Year, d.Month, d.Day)
 }
@@ -170,60 +175,59 @@ func (d *Date) DateTime() string {
     return fmt.Sprintf("%d-%d-%d | %d:%d", d.Year, d.Month, d.Day, d.Hours, d.Minutes)
 }
 
+func (d *Date) DateFromString(text string) {
+    if strings.HasPrefix(text, "date ") {
+        dateStr := strings.TrimPrefix(text, "date ")
+        timedate := strings.Split(dateStr, "/")
+
+        day, ferr := strconv.Atoi(timedate[0]) 
+        if ferr != nil {
+            log.Println("Format error: Days are wrong")
+        }
+        d.Day = day
+
+        month, ferr := strconv.Atoi(timedate[1]) 
+        if ferr != nil {
+            log.Println("Format error: Months are wrong")
+        }
+        d.Month = month
+
+        year, ferr := strconv.Atoi(timedate[2][:len(timedate[2])-1]) 
+        if ferr != nil {
+            log.Println("Format error: Years are wrong")
+        }
+        d.Year = year
+    }
+
+    if strings.HasPrefix(text, "time") {
+        timeStr := strings.TrimPrefix(text, "time ")
+        time := strings.Split(timeStr, ":")
+
+        hours, ferr := strconv.Atoi(time[0])
+        if ferr != nil {
+            log.Println("Format error: Hours are wrong")
+
+        }
+        minutes, ferr := strconv.Atoi(time[1][:len(time[1]) - 1])
+        if ferr != nil {
+            log.Println("Format error: Minutes are wrong")
+        }
+        d.Hours = hours
+        d.Minutes = minutes
+    }
+}
+
 func parseHeader(t *TagHTML) string {
     date := Date{}
     var tarr []string
 
     for _, line := range strings.Split(t.Text, "\n") {
-        if strings.HasPrefix(line, "date ") {
-            dateStr := strings.TrimPrefix(line, "date ")
-            timedate := strings.Split(dateStr, "/")
-
-            day, ferr := strconv.Atoi(timedate[0]) 
-            if ferr != nil {
-                return "Date format error: days are wrong"
-            }
-            date.Day = day
-
-            month, ferr := strconv.Atoi(timedate[1]) 
-            if ferr != nil {
-                return "Date format error: months are wrong"
-            }
-            date.Month = month
-
-
-            year, ferr := strconv.Atoi(timedate[2][:len(timedate[2])-1]) 
-            if ferr != nil {
-                return "Date format error: years are wrong "
-            }
-            date.Year = year
-            continue
-        }
-
-        if strings.HasPrefix(line, "time") {
-            timeStr := strings.TrimPrefix(line, "time ")
-            time := strings.Split(timeStr, ":")
-
-            hours, ferr := strconv.Atoi(time[0])
-            if ferr != nil {
-                return "Time format error: Hours are wrong"
-            }
-            minutes, ferr := strconv.Atoi(time[1][:len(time[1]) - 1])
-            if ferr != nil {
-                return "Time format error: Minutes are wrong"
-            }
-            date.Hours = hours
-            date.Minutes = minutes
-            continue
-        }
-
-
         if strings.HasPrefix(line, "tags") {
             tags := strings.TrimPrefix(line, "tags ")
             tarr = strings.Split(tags, ",")
             continue
         }
-
+        date.DateFromString(line)
     }
 
     sb := strings.Builder{}
@@ -243,3 +247,4 @@ func parseHeader(t *TagHTML) string {
     sb.WriteString("</ul>\n</hgroup>")
     return sb.String()
 }
+

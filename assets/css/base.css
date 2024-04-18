@@ -9,30 +9,6 @@ body {
     font-family: BlexMono;
 }
 
-header {
-    margin: 0;
-    padding: 1em;
-    height: 5%;
-    width: 100%;
-}
-
-main {
-    margin-top: 5%;
-    width: 80%;
-    height: 80%;
-    margin: 0 auto;
-    border: 1px solid blue;
-    min-height: 100vh;
-}
-
-main > section:first-of-type {
-}
-
-main > section:nth-of-type(2) {
-    width: 80%;
-    margin: 0 auto;
-}
-
 footer {
     padding: 1em;
     height: 5%;
@@ -49,7 +25,53 @@ p {
 }
 
 
-/* Main header specifics */
-body > header > h1 {
+/* Header specifics */
+body > header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+body > header > hgroup {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+body > header > hgroup > ul {
+    list-style: none;
+    display: flex;
+    justify-content: space-around;
+    padding: 0;
+}
+
+body > header > hgroup > ul > li:after {
+    content: ',';
+    margin-right: 0.1em;
+}
+
+body > header > hgroup > ul > li:last-child:after {
+    content: ''
+}
+
+/* Main specifics */
+body > main {
+    margin-top: 5%;
+    width: 60%;
+    margin: 0 auto;
+    border: 1px solid blue;
+    /* min-height: 100vh; */
+}
+
+body > main > article > section {
+    margin-bottom: 5em;
+}
+
+body > main > article > section:last-child {
+    margin-bottom: 0;
+}
+
+body > main > article > section > h2 {
     text-align: center;
 }

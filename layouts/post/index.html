@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <title> {{ .PostTitle }} </title>
+        <title> {{ .Title }} </title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link href="http://localhost:8080/resources/css/base.css" rel="stylesheet" type="text/css">
     </head>
 
     <body>
@@ -11,22 +12,15 @@
             <nav>
                 HOME > ANY > POST
             </nav>
-            <h1> {{ .PostTitle }} </h1>
-            <hgroup>
-                Published: {{ .Date.Year }}-{{ .Date.Month }}-{{ .Date.Day }} 
-                at {{ .Date.hours }}:{{ .Date.minutes }}
-            </hgroup>
+            <h1>{{ .Title }}</h1>
+            {{ .Header }}
+            {{ if eq .Abstract nil }} {{  "" }} {{ else }} {{ .Abstract }} {{ end }}
         </header>
 
         <main>
             <article>
-                {{ range .Sections }}
-                <section>
-                    <h3> {{ .SectionTitle }} </h3>
-                    {{ range .Tags }}
-                    {{ . }}
-                    {{ end }}
-                </section>
+                {{ range .HTML }}
+                {{ . }}
                 {{ end }}
             </article>
         </main>

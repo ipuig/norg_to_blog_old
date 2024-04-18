@@ -3,22 +3,42 @@ package ipl
 import (
 	"bytes"
 	"fmt"
+	"log"
 	"os"
+	"sort"
 )
 
+func AnalyseContent() Posts {
 
-func AnalyseContent() {
     dir, err := os.ReadDir("content/posts")
 
     if err != nil {
         os.MkdirAll("content/posts", 0755)
+        log.Println("Place your posts at \"content/posts/\"")
+        return nil
     }
+
+    posts := make(Posts, 0, 10)
 
     for _, f := range dir {
         if f.Type().IsRegular() {
-            ProcessFile("content/posts/" + f.Name())
+
+            tags, err := ProcessFile("content/posts/" + f.Name())
+
+            if err != nil {
+                continue // ignore invalid files TODO: add warning
+            }
+            post := &Post{ Elements: tags}
+            post.Generate()
+            posts = append(posts, post)
         }
     }
+
+    if posts.Len() > 1 {
+        sort.Sort(posts)
+    }
+
+    return posts
 }
 
 type FileState struct {
@@ -38,7 +58,7 @@ func (bn *ByteNode) Container() bool {
 }
 
 func (bn *ByteNode) Compile() *TagHTML {
-    bn.Tag.Text = string(bn.Content)
+    bn.Tag.Text = string(bytes.TrimSpace(bn.Content))
     return bn.Tag
 }
 
@@ -167,9 +187,10 @@ func processWord(word []byte, fstate *FileState) {
 
 func processCommand(command []byte, open bool, fstate *FileState) {
     switch string(command) {
-    case "mt": fstate.Load(h2, open)
+    case "mt": fstate.Load(h1, open)
     case "p": fstate.Load(p, open)
     case "head": fstate.Load(head, open)
     case "s": fstate.Load(st, open)
+    case "abs": fstate.Load(abs, open)
     }
 }
