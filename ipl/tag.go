@@ -35,20 +35,24 @@ type TagOptions struct {
 type TagHTML struct {
     TagType int
     Text string
-    Children []Tag
+    Children []*TagHTML
     TagOptions
 }
 
-func (t TagHTML) Container() bool {
+func (t *TagHTML) Render() template.HTML {
+    return template.HTML(t.String())
+}
+
+func (t *TagHTML) Container() bool {
     if t.TagType >= div {
         return true
     }
     return false
 }
 
-func (t TagHTML) String() string {
+func (t *TagHTML) String() string {
     if t.TagType == head {
-        return parseHeader(&t)
+        return parseHeader(t)
     }
 
     if t.Container() {
@@ -103,13 +107,13 @@ func wrapSimpleTag(tag int, content string, opts TagOptions) string {
     if tag == img || tag == br || tag == hr {
         sb.WriteString("/>")
     } else {
-        sb.WriteString(">" + content + "</" + tname + ">")
+        sb.WriteString(">" + strings.TrimSpace(content) + "</" + tname + ">")
     }
 
     return sb.String()
 }
 
-func wrapContainer(tag TagHTML) string {
+func wrapContainer(tag *TagHTML) string {
     var tname string
     sb := strings.Builder{}
 
@@ -142,11 +146,11 @@ func wrapContainer(tag TagHTML) string {
 
     if tag.Children != nil {
         for _, child := range tag.Children {
-            sb.WriteString(child.String())
+            sb.WriteString(child.String() + "\n")
         }
     }
 
-    sb.WriteString("</" + tname + ">")
+    sb.WriteString("</" + tname + ">\n")
     return sb.String()
 }
 
@@ -159,7 +163,7 @@ type Date struct {
 }
 
 func (d *Date) Date() string {
-    return fmt.Sprintf("%s-%s-%s", d.Year, d.Month, d.Day)
+    return fmt.Sprintf("%d-%d-%d", d.Year, d.Month, d.Day)
 }
 
 func (d *Date) DateTime() string {
@@ -177,7 +181,7 @@ func parseHeader(t *TagHTML) string {
 
             day, ferr := strconv.Atoi(timedate[0]) 
             if ferr != nil {
-                return "Date format error: years are wrong"
+                return "Date format error: days are wrong"
             }
             date.Day = day
 
@@ -188,9 +192,9 @@ func parseHeader(t *TagHTML) string {
             date.Month = month
 
 
-            year, ferr := strconv.Atoi(timedate[2]) 
+            year, ferr := strconv.Atoi(timedate[2][:len(timedate[2])-1]) 
             if ferr != nil {
-                return "Date format error: years are wrong"
+                return "Date format error: years are wrong "
             }
             date.Year = year
             continue
@@ -204,7 +208,7 @@ func parseHeader(t *TagHTML) string {
             if ferr != nil {
                 return "Time format error: Hours are wrong"
             }
-            minutes, ferr := strconv.Atoi(time[1])
+            minutes, ferr := strconv.Atoi(time[1][:len(time[1]) - 1])
             if ferr != nil {
                 return "Time format error: Minutes are wrong"
             }
@@ -236,6 +240,6 @@ func parseHeader(t *TagHTML) string {
     for _, ctag := range tarr {
         sb.WriteString(fmt.Sprintf("<li>%s</li>\n", ctag))
     }
-    sb.WriteString("</ul>\n</hgroup>\n")
+    sb.WriteString("</ul>\n</hgroup>")
     return sb.String()
 }

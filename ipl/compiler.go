@@ -3,9 +3,9 @@ package ipl
 import (
 	"bytes"
 	"fmt"
-	"log"
 	"os"
 )
+
 
 func AnalyseContent() {
     dir, err := os.ReadDir("content/posts")
@@ -21,128 +21,155 @@ func AnalyseContent() {
     }
 }
 
-
-type LineAnalyser struct {
-    head *Node
-    order int
-    processed map[int]Tag
+type FileState struct {
+    Tags []*TagHTML
+    Head *ByteNode
 }
 
-type Node struct {
-    val string
-    prev *Node
-    order int
-    accStr []byte
+type ByteNode struct {
+    Prev *ByteNode
+    Nested []*ByteNode
+    Content []byte
+    Tag *TagHTML
 }
 
-func (la *LineAnalyser) load(tagType int, open bool) {
+func (bn *ByteNode) Container() bool {
+    return bn.Tag.Container()
+}
 
-    if !open && la.head != nil{
-        la.consume(tagType)
+func (bn *ByteNode) Compile() *TagHTML {
+    bn.Tag.Text = string(bn.Content)
+    return bn.Tag
+}
+
+func (fs *FileState) addToContent(stream []byte) {
+    if fs.Head == nil {
         return
     }
 
-
-    node := Node {
-        prev: la.head,
-        order: la.order,
-        accStr: []byte{},
+    if fs.Head.Container() && len(fs.Head.Nested) > 0 {
+        fs.Head.Nested[len(fs.Head.Nested)-1].Content = append(fs.Head.Nested[len(fs.Head.Nested)-1].Content, stream...)
+        return
     }
 
-    la.head = &node
-    la.order++
+    fs.Head.Content = append(fs.Head.Content, stream...)
 }
 
-func (la *LineAnalyser) consume(tagType int) {
-    tag := Tag{
-        TagType: tagType,
-        Text: string(la.head.accStr[:len(la.head.accStr) - 1]),
-        Children: []Tag{} ,
+func (fs *FileState) Consume(tag int) {
+    if fs.Head == nil {
+        fmt.Println("error unexpected closing")
+        return
     }
 
-    if tagType >= hgroup {
-        for id, st := range la.processed {
-            if id != la.head.order {
-                tag.Children = append(tag.Children, st)
-                delete(la.processed, id)
-            }
+    if fs.Head.Container() {
+        // closing container
+        if fs.Head.Tag.TagType == tag {
+            fs.Tags = append(fs.Tags, fs.Head.Compile())
+            fs.Head = fs.Head.Prev
+            return
+        }
+
+        // element within container
+        if len(fs.Head.Nested) >= 1 {
+            child := fs.Head.Nested[len(fs.Head.Nested)-1].Compile()
+            fs.Head.Tag.Children = append(fs.Head.Tag.Children, child)
+            fs.Head.Nested = fs.Head.Nested[:len(fs.Head.Nested) - 1]
+            return
         }
     }
 
-    la.processed[la.head.order] = tag
-    la.head = la.head.prev
+    // simple tags
+    fs.Tags = append(fs.Tags, fs.Head.Compile())
+    fs.Head = fs.Head.Prev
 }
 
-func (la *LineAnalyser) addToTagBuffer(word []byte) {
-    if la.head == nil {
+func (fs *FileState) AppendChild(tag *TagHTML) {
+    bn := ByteNode{
+        Tag: tag,
+        Prev: fs.Head,
+        Content: make([]byte, 0),
+    }
+    fs.Head.Nested = append(fs.Head.Nested, &bn)
+}
+
+func (fs *FileState) Push(tag int) {
+    t := TagHTML{ TagType: tag}
+
+    if fs.Head != nil && fs.Head.Container() {
+        fs.AppendChild(&t)
         return
     }
-    if len(la.head.accStr) > 0 && la.head.accStr[len(la.head.accStr)-1] != ' ' && la.head.accStr[len(la.head.accStr)-1] != '\n' {
-        la.head.accStr = append(la.head.accStr, ' ')
+
+    bn := ByteNode{
+        Tag: &t,
+        Prev: fs.Head,
+        Content: make([]byte, 0),
     }
-    la.head.accStr = append(la.head.accStr, word...)
+
+    if bn.Container() {
+        bn.Nested = make([]*ByteNode, 0)
+    }
+
+    fs.Head = &bn
 }
 
-func ProcessFile(path string) (Post, error) {
-    state := LineAnalyser{
-        head: nil,
-        order: 0,
-        processed: make(map[int]Tag),
+func (fs *FileState) Load(tag int, open bool) {
+    if !open {
+        fs.Consume(tag)
+        return
+    }
+    fs.Push(tag)
+}
+
+
+func ProcessFile(path string) ([]*TagHTML, error) {
+    fstate := FileState{
+        Tags: make([]*TagHTML, 0),
     }
 
-    filecontent, err := os.ReadFile(path)
-    post := Post{}
-
+    fbytes, err := os.ReadFile(path)
     if err != nil {
-        log.Printf("couldn't read the file %s\n", path)
-        return post, err
+        return nil, nil
     }
 
-
-    lines := bytes.Split(filecontent, []byte{'\n'})
-
-    for _, line := range lines {
-        processLine(line, &state)
-
-        if state.head != nil && len(state.head.accStr) >= 1 {
-            state.head.accStr = append(state.head.accStr, '\n')
-        }
+    for _, line := range bytes.Split(fbytes, []byte("\n")) {
+        processLine(line, &fstate)
+        fstate.addToContent([]byte("\n"))
     }
 
-    for _, p := range state.processed {
-        fmt.Println(p.String())
-    }
-    return post, nil
+    return fstate.Tags, nil
 }
 
-func processLine(line []byte, state *LineAnalyser) {
-    for _, word := range bytes.Split(line, []byte { ' ' }) {
-        processWord(word, state)
+func processLine(line []byte, fstate *FileState) {
+    words := bytes.Split(line, []byte(" "))
+    for _, word := range words {
+        processWord(word, fstate)
+        fstate.addToContent([]byte(" "))
     }
 }
 
-func processWord(word []byte, state *LineAnalyser) {
+func processWord(word []byte, fstate *FileState) {
     l := len(word)
     if l <= 2 {
-        state.addToTagBuffer(word)
+        fstate.addToContent(word)
         return
     }
     if word[0] == ':' && word[1] == ':' {
-        processCommand(word[2:], true, state)
+        processCommand(word[2:], true, fstate)
         return
     }
     if word[l - 1] == ':' && word[l - 2] == ':' {
-        processCommand(word[:l-2], false, state)
+        processCommand(word[:l-2], false, fstate)
         return
     }
-    state.addToTagBuffer(word)
+    fstate.addToContent(word)
 }
 
-func processCommand(command []byte, open bool, state *LineAnalyser) {
+func processCommand(command []byte, open bool, fstate *FileState) {
     switch string(command) {
-    case "mt": state.load(h2, open)
-    case "p": state.load(p, open)
-    case "head": state.load(head, open)
-    case "s": state.load(section, open)
+    case "mt": fstate.Load(h2, open)
+    case "p": fstate.Load(p, open)
+    case "head": fstate.Load(head, open)
+    case "s": fstate.Load(st, open)
     }
 }
