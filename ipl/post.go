@@ -1,7 +1,6 @@
 package ipl
 
 import (
-	"fmt"
 	"html/template"
 	"strings"
 )
@@ -48,7 +47,6 @@ func (p *Post) Generate() {
         switch element.TagType {
         case h1:
             p.URL = strings.ReplaceAll(strings.ToLower(element.Text), " ", "_")
-            fmt.Println(p.URL)
             p.Title = element.Text
         case head:
             for _, line := range strings.Split(element.Text, "\n") {

@@ -12,7 +12,8 @@ const (
     p = iota; span; em;
     b; br; hr; h1; h2; h3;
     h4; h5; h6; img; strong;
-    a; li; div; hgroup; head;
+    code; a; li;
+    div; hgroup; head;
     figure; aside;
     article; section;
     st; abs
@@ -82,6 +83,7 @@ func wrapSimpleTag(tag int, content string, opts TagOptions) string {
     case img: tname = "img" 
     case br: tname = "br"
     case hr: tname = "hr"
+    case code: tname = "code"
     }
 
     sb.WriteString("<" + tname)

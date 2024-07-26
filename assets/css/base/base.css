@@ -1,0 +1,74 @@
+@import url('/static/css/base/colours.css');
+@import url('/static/css/base/fonts.css');
+
+body {
+    background-color: var(--gruvbox-light-bg);
+    color: var(--gruvbox-light-fg);
+    padding: 0;
+    margin: 0;
+    font-family: BlexMono;
+}
+
+a, p, span, code, b, em, strong {
+    text-decoration: none;
+    color: var(--gruvbox-light-fg)
+}
+
+p {
+    padding: .5em;
+}
+
+body > header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+footer {
+    width: 100%;
+}
+
+footer > hr {
+    margin-bottom: 1em;
+    color: var(--gruvbox-light-bg-rgba-3);
+    width: 60%;
+}
+
+footer > nav > ul {
+    list-style: none;
+
+    width: 60%;
+    margin: 0 auto;
+
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    gap: 0;
+}
+
+footer > nav > ul > li:last-child {
+    margin-right: 0;
+}
+
+footer > nav > ul > li > a > img {
+    width: 2em;
+}
+
+/* side controls */
+.control {
+    min-height: 6em;
+    min-width: 6em;
+}
+
+.control > div:first-child {
+    font-size: 4em;
+}
+
+.control > div:last-child {
+    display: none;
+}
+
+.control > div:first-child:hover + div {
+    display: block;
+}

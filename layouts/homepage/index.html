@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title> {{ .Title }}</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link href="/static/css/homepage/styles.css" rel="stylesheet" type="text/css">
+    </head>
+    <body>
+        <header>
+            <h1> Ivan B. Puig </h1>
+        </header>
+
+        <main>
+            <section>
+                {{ range .Posts}}
+                <a href="{{ .URL }}">
+                    <article>
+                        <hgroup>
+                            <h3> {{ .Title }} </h3>
+                            <p> {{ .Date.Format }} </p>
+                            {{ if .HasTags }}
+                            <p> {{ .Tags }} </p>
+                            {{ end }}
+                        </hgroup>
+                        {{ if .HasAbstract }}
+                        <p> {{ .Abstract }} </p>
+                        {{ end }}
+                    </article>
+                </a>
+                {{ end }}
+            </section>
+        </main>
+    </body>
+</html>

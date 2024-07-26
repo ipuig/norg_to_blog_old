@@ -1,0 +1,53 @@
+/* body > header > hgroup { */
+/*     display: flex; */
+/*     flex-direction: column; */
+/*     align-items: center; */
+/* } */
+/**/
+/* body > header > hgroup > ul { */
+/*     list-style: none; */
+/*     display: flex; */
+/*     justify-content: space-around; */
+/*     padding: 0; */
+/* } */
+/**/
+/* body > header > hgroup > ul > li:after { */
+/*     content: ','; */
+/*     margin-right: 0.1em; */
+/* } */
+/**/
+/* body > header > hgroup > ul > li:last-child:after { */
+/*     content: '' */
+/* } */
+/**/
+
+
+body > main > article > section {
+    margin-bottom: 5em;
+}
+
+body > main > article > section:last-child {
+    margin-bottom: 0;
+}
+
+body > main > article > section > h2 {
+    text-align: center;
+}
+
+/* Aside Links */
+
+/* body > aside { */
+/*     display: none; */
+/* } */
+/**/
+/* body > aside:last-child { */
+/*     display: none; */
+/* } */
+/**/
+/* body > main { */
+/*     display: none; */
+/* } */
+/**/
+/* body > footer { */
+/*     display: none; */
+/* } */

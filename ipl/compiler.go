@@ -192,5 +192,8 @@ func processCommand(command []byte, open bool, fstate *FileState) {
     case "head": fstate.Load(head, open)
     case "s": fstate.Load(st, open)
     case "abs": fstate.Load(abs, open)
+    case "b": fstate.Load(b, open)
+    case ":": fstate.Load(br, open)
+    case "c": fstate.Load(code, open)
     }
 }
