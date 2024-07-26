@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <title> {{ .Title }} </title>
+        <title> {{ .Page.Title }} </title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link href="/static/css/base/styles.css" rel="stylesheet" type="text/css">
@@ -10,21 +10,24 @@
 
     <body>
         <header>
-            <nav>
-                HOME > ANY > POST
-            </nav>
-            <h1>{{ .Title }}</h1>
-            {{ .Header }}
-            {{ if eq .Abstract nil }} {{  "" }} {{ else }} {{ .Abstract }} {{ end }}
+            {{ if .Page.HasPathControl }}
+            {{ template "path_control" .Page.PathControl }}
+            {{ end }}
+            <h1>{{ .Page.Title }}</h1>
         </header>
 
         <main>
-            <article>
-                {{ range .HTML }}
-                {{ . }}
-                {{ end }}
-            </article>
+            {{ if .Page.HasLeftLateralControls }}
+            {{ template "lateral_control" .Page.LeftLateralControl }}
+            {{ end }}
+            <section>
+            </section>
+            {{ if .Page.HasRightLateralControls }}
+            {{ template "lateral_control" .Page.RightLateralControl }}
+            {{ end }}
         </main>
-    
+        {{ if .Page.HasFooter }}
+        {{ template "footer" .Page.Footer }}
+        {{ end }}
     </body>
 </html>

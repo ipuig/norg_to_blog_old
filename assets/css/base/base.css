@@ -25,6 +25,55 @@ body > header {
     justify-content: center;
 }
 
+main {
+    display: grid;
+    justify-content: space-between;
+    grid-template-areas: "left posts right";
+    grid-template-columns: 1fr 8fr 1fr;
+    gap: 1em;
+    padding: 1em;
+    width: 80%;
+    margin: 0 auto;
+    position: relative;
+
+    min-height: 60vh;
+}
+
+main > section {
+    grid-area: posts;
+    justify-self: center;
+    width: 100%;
+}
+
+main > section > a > article {
+    padding: 1em;
+    margin-bottom: 2em;
+    background-color: var(--gruvbox-light-bg-rgba-2);
+}
+
+main > aside:first-child {
+    grid-area: left;
+    align-self: center;
+    left: 10%;
+}
+
+main > aside:last-child {
+    grid-area: right;
+    align-self: center;
+    right: 10%;
+}
+
+main > aside:first-child, main > aside:last-child {
+    justify-self: start;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    position: fixed;
+    top: 50%;
+}
+
 footer {
     width: 100%;
 }
@@ -61,14 +110,25 @@ footer > nav > ul > li > a > img {
     min-width: 6em;
 }
 
-.control > div:first-child {
+.control > a > div:first-child {
     font-size: 4em;
 }
 
-.control > div:last-child {
+.control > a > div:last-child {
     display: none;
 }
 
-.control > div:first-child:hover + div {
+.control > a > div:first-child:hover + div {
     display: block;
+}
+
+/* post metadata */
+.date {
+    font-style: italic;
+    font-size: .9em;
+
+}
+
+.tags {
+    font-size: .9em;
 }

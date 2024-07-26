@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <title> {{ .Title }}</title>
+        <title> {{ .Page.Title }}</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link href="/static/css/homepage/styles.css" rel="stylesheet" type="text/css">
@@ -9,27 +9,38 @@
     <body>
         <header>
             <h1> Ivan B. Puig </h1>
+            <h2> {{ .Page.Title }} </h2>
         </header>
 
         <main>
+            {{ if .Page.HasLeftLateralControls }}
+            {{ template "lateral_control" .Page.LeftLateralControl }}
+            {{ end }}
             <section>
                 {{ range .Posts}}
                 <a href="{{ .URL }}">
                     <article>
                         <hgroup>
-                            <h3> {{ .Title }} </h3>
-                            <p> {{ .Date.Format }} </p>
+                            <h3> {{ .Page.Title }} </h3>
+                            <span class="date"> Published: {{ .Date.Format }} </span>
                             {{ if .HasTags }}
-                            <p> {{ .Tags }} </p>
+                            <span class="tags"> {{ .Tags }} </span>
                             {{ end }}
                         </hgroup>
                         {{ if .HasAbstract }}
+                        <hr>
                         <p> {{ .Abstract }} </p>
                         {{ end }}
                     </article>
                 </a>
                 {{ end }}
             </section>
+            {{ if .Page.HasRightLateralControls }}
+            {{ template "lateral_control" .Page.RightLateralControl }}
+            {{ end }}
         </main>
+        {{ if .Page.HasFooter }}
+        {{ template "footer" .Page.Footer }}
+        {{ end }}
     </body>
 </html>
