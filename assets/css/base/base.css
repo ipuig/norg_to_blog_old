@@ -106,21 +106,45 @@ footer > nav > ul > li > a > img {
 
 /* side controls */
 .control {
-    min-height: 6em;
-    min-width: 6em;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
 }
 
-.control > a > div:first-child {
-    font-size: 4em;
+.control > div:first-child {
+    font-size: 2.5em;
+    display: inline-block;
 }
 
-.control > a > div:last-child {
-    display: none;
+.control > div:last-child {
+    visibility: hidden;
+    position: absolute;
+    z-index: 1;
+    top: 90%;
+    text-align: center;
 }
 
-.control > a > div:first-child:hover + div {
-    display: block;
+.control > div:first-child:hover + div {
+    visibility: visible;
+    width: 400%;
 }
+
+.path_control > span > a:last-child {
+    font-weight: bold;
+}
+
+.path_control > span > a:hover:not(:last-child) {
+    text-decoration: underline;
+    font-weight: bold;
+}
+
+.path_control > span > a:hover:not(:last-child) ~ a:last-child {
+    font-weight: normal;
+}
+
+
 
 /* post metadata */
 .date {

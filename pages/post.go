@@ -4,7 +4,10 @@ import (
 	"fmt"
 	"html/template"
 	"net/http"
+	"os"
 	"regexp"
+	"slices"
+	"sort"
 	"strings"
 )
 
@@ -25,6 +28,7 @@ type Post struct {
     PostTags []string
     Date Date
     Page Page
+    HTML template.HTML
 }
 
 func (p *Post) Template() func (w http.ResponseWriter, r *http.Request) {
@@ -52,6 +56,23 @@ func (p Post) HasAbstract() bool {
     return p.Abstract != ""
 }
 
+func CreatePostFromHTML(title, abstract string, tags []string, date Date, filepath string) Post {
+    post := Post{
+        Page: Page{ Title: title },
+        Abstract: abstract,
+        PostTags: tags,
+        Date: date,
+    }
+
+    content, err := os.ReadFile(filepath)
+    if err != nil {
+        panic("Error while reading the file on CreatePostFromHTML")
+    }
+
+    post.HTML = template.HTML(string(content))
+    return post
+}
+
 type Posts []Post
 func (ps Posts) Len() int { return len(ps) }
 func (ps Posts) Swap(i, j int) { ps[i], ps[j] = ps[j], ps[i] }
@@ -75,3 +96,58 @@ func (ps Posts) Less(i, j int) bool {
 
     return false
 }
+
+type ProcessedPosts struct {
+    Len int
+    ByYear map[int][]Post
+}
+
+func (pp ProcessedPosts) Posts() []Post {
+    years := make([]int, 0, len(pp.ByYear))
+    posts := make([]Post, 0, pp.Len)
+
+    for year := range pp.ByYear {
+        years = append(years, year)
+    }
+
+    sort.Ints(years)
+    slices.Reverse(years)
+
+    for _, year := range years {
+        posts = append(posts, pp.ByYear[year]...)
+    }
+
+    return posts
+}
+
+func ProcessPosts(posts []Post) ProcessedPosts {
+    classified := make(map[int][]Post)
+    sort.Sort(sort.Reverse(Posts(posts)))
+
+    for idx, post := range posts {
+
+        if idx > 0 {
+            previous := posts[idx - 1]
+            lc := MakeLateralControl("<", previous.URL(), previous.Page.Title)
+            post.Page.LeftLateralControl = lc;
+        }
+
+        if idx < (len(posts) - 1) {
+            next := posts[idx + 1]
+            lc := MakeLateralControl(">", next.URL(), next.Page.Title)
+            post.Page.RightLateralControl = lc;
+
+        }
+
+        post.Page.PathControl = PathControl{ post.URL() }
+
+        ps, ok := classified[post.Date.Year]
+        if !ok {
+            classified[post.Date.Year] = []Post{ post }
+            continue
+        }
+
+        classified[post.Date.Year] = append(ps, post)
+    }
+    return ProcessedPosts{Len: len(posts), ByYear: classified}
+} 

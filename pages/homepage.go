@@ -9,6 +9,7 @@ const HomepagePath = "layouts/homepage/index.html"
 type Homepage struct {
     Posts []Post
     Page Page
+    Author string
 }
 
 func (h *Homepage) Template() func (w http.ResponseWriter, r *http.Request) {

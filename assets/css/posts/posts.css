@@ -1,0 +1,14 @@
+@import url('/static/css/base/styles.css');
+
+body > header {
+    margin-top: 2em;
+}
+
+body > header + hr {
+    margin-top: 2em;
+    width: 70%;
+}
+
+article {
+    /* border: 1px solid black; */
+}

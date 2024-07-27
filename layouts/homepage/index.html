@@ -8,8 +8,15 @@
     </head>
     <body>
         <header>
-            <h1> Ivan B. Puig </h1>
+            {{ if eq .Author "" }}
+                {{ if .Page.HasPathControl}}
+                {{ template "path_control" .Page.PathControl }}
+                {{ end }}
+            <h1> {{ .Page.Title }} </h1>
+            {{ else }}
+            <h1> {{ .Author }} </h1>
             <h2> {{ .Page.Title }} </h2>
+            {{ end }}
         </header>
 
         <main>

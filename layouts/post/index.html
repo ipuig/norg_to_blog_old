@@ -4,7 +4,7 @@
         <title> {{ .Page.Title }} </title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link href="/static/css/base/styles.css" rel="stylesheet" type="text/css">
+        <link href="/static/css/post/styles.css" rel="stylesheet" type="text/css">
 
     </head>
 
@@ -14,13 +14,27 @@
             {{ template "path_control" .Page.PathControl }}
             {{ end }}
             <h1>{{ .Page.Title }}</h1>
+            <span class="date">Published {{ .Date.Format }} </span>
+            {{ if .HasTags }}
+            <span class="tags"> {{ .Tags }} </span>
+            {{ end }}
         </header>
+
+        <hr>
 
         <main>
             {{ if .Page.HasLeftLateralControls }}
             {{ template "lateral_control" .Page.LeftLateralControl }}
             {{ end }}
             <section>
+                {{ if eq .HTML "" }}
+                <article>
+                    <h2> Work in progress </h2>
+                    <p> I am either testing the blog or about to publish this post </p>
+                <article>
+                {{ else }}
+                {{ .HTML }}
+                {{ end }}
             </section>
             {{ if .Page.HasRightLateralControls }}
             {{ template "lateral_control" .Page.RightLateralControl }}
