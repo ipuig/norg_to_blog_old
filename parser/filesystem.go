@@ -32,29 +32,32 @@ type FSPost struct {
     CSSFiles []string
     ImagesPath []string
     Filename string
-    Content []byte
+    Content string
+    Title string
+    Date string
 }
 
-func (fp FSPost) Metadata() (string, string) {
-    content := string(fp.Content)
-    title := ""
-    date := ""
+func (fp *FSPost) Metadata() {
+    if fp.Title != "" {
+        return
+    }
 
-    for _, line := range strings.Split(content, "\n") {
+    lines := strings.Split(fp.Content, "\n")
+    for idx, line := range lines {
         if strings.HasPrefix(line, "title:") {
-            title = extractMetadata("title:", line)
+            fp.Title = extractMetadata("title:", line)
             continue
         }
 
         if strings.HasPrefix(line, "date:") {
-            date = extractMetadata("date:", line)
+            fp.Date = extractMetadata("date:", line)
         }
 
-        if line != "" && date != "" {
+        if fp.Title != "" && fp.Date != "" {
+            fp.Content = strings.Join(lines[idx+1:], "\n")
             break
         }
     }
-    return title, date
 }
 
 func extractMetadata(prefix, line string) string {
@@ -94,7 +97,7 @@ func PostFromPath(path string) FSPost {
     if err != nil {
         panic(err)
     }
-    fpost.Content = content
+    fpost.Content = string(content)
     return fpost
 }
 

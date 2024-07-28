@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"html/template"
 	"net/http"
-	"os"
 	"regexp"
 	"slices"
 	"sort"
+	"strconv"
 	"strings"
 )
 
@@ -15,6 +15,14 @@ type Date struct {
     Year int
     Month int
     Day int
+}
+func DateFromString(date string) Date {
+    dateFragments := regexp.MustCompile("[0-3]?[0-9]").FindAllStringSubmatch(date, -1)
+    day, _ := strconv.Atoi(dateFragments[0][0])
+    month, _ := strconv.Atoi(dateFragments[1][0])
+    year, _ := strconv.Atoi(dateFragments[len(dateFragments) - 1][0])
+    res := Date{Day: day, Month: month, Year: 2000 + year}
+    return res
 }
 
 
@@ -28,6 +36,7 @@ type Post struct {
     PostTags []string
     Date Date
     Page Page
+    AdditionalCSS []string
     HTML template.HTML
 }
 
@@ -52,25 +61,12 @@ func (p Post) HasTags() bool {
     return p.PostTags != nil && len(p.PostTags) >= 1;
 }
 
-func (p Post) HasAbstract() bool {
-    return p.Abstract != ""
+func (p Post) HasCSS() bool {
+    return p.AdditionalCSS != nil && len(p.AdditionalCSS) >= 1;
 }
 
-func CreatePostFromHTML(title, abstract string, tags []string, date Date, filepath string) Post {
-    post := Post{
-        Page: Page{ Title: title },
-        Abstract: abstract,
-        PostTags: tags,
-        Date: date,
-    }
-
-    content, err := os.ReadFile(filepath)
-    if err != nil {
-        panic("Error while reading the file on CreatePostFromHTML")
-    }
-
-    post.HTML = template.HTML(string(content))
-    return post
+func (p Post) HasAbstract() bool {
+    return p.Abstract != ""
 }
 
 type Posts []Post

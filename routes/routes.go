@@ -67,44 +67,26 @@ func GenerateYearPages(mux *http.ServeMux, processedPosts ProcessedPosts) {
 }
 
 func GeneratePosts(mux *http.ServeMux) []Post {
-
     paths := FetchPostPaths()
+    posts := make([]Post, len(paths) - 1)
+
     for _, path := range paths {
         fpost := PostFromPath(path)
-        ServePostResource(fpost)
+        ServePostResources(&fpost)
+        post := Post{
+            Page: Page{
+                Title: fpost.Title,
+            },
+            HTML: HTML(fpost),
+            Date: DateFromString(fpost.Date),
+            
+        }
+        posts = append(posts, post)
     }
+    processed := ProcessPosts(posts)
+    posts = processed.Posts()
 
-    posts := []Post{
-        {
-            Page: Page{
-                Title: "My wife told me 28h til next kisu in pipi",
-            },
-            PostTags: []string{ "yap", "yup"},
-            Date: Date{Year: 2024, Month: 7, Day: 24},
-            Abstract: "stuff",
-        },
-        {
-            Page: Page{
-                Title: "We'll eat wings today",
-            },
-            PostTags: []string{ "yap", "yup"},
-            Date: Date{Year: 2024, Month: 8, Day: 24},
-            Abstract: "Lorem ipsum dolor sit amet, qui minim labore adipisicing minim sint cillum sint consectetur cupidatat.",
-        },
-
-        {
-            Page: Page{
-                Title: "Babsuuuu",
-            },
-            PostTags: []string{ "yap", "yup"},
-            Date: Date{Year: 2023, Month: 8, Day: 24},
-            Abstract: "Lorem ipsum dolor sit amet, officia excepteur ex fugiat reprehenderit enim labore culpa sint ad nisi Lorem pariatur mollit ex esse exercitation amet. Nisi anim cupidatat excepteur officia. Reprehenderit nostrud nostrud ipsum Lorem est aliquip amet voluptate voluptate dolor minim nulla est proident. Nostrud officia pariatur ut officia. Sit irure elit esse ea nulla sunt ex occaecat reprehenderit commodo officia dolor Lorem duis laboris cupidatat officia voluptate. Culpa proident adipisicing id nulla nisi laboris ex in Lorem sunt duis officia eiusmod. Aliqua reprehenderit commodo ex non excepteur duis sunt velit enim. Voluptate laboris sint cupidatat ullamco ut ea consectetur et est culpa et culpa duis.",
-        },
-        // CreatePostFromHTML("Post from html", "This is a test post that I created from a random html file", []string{"testing", "webdev", "golang"}, Date{Year: 2024, Month: 7, Day: 27}, "content/test.html"),
-    }
-
-    processedPosts := ProcessPosts(posts)
-    for _, post := range processedPosts.Posts() {
+    for _, post := range posts {
         mux.HandleFunc(post.URL(), post.Template())
     }
 
