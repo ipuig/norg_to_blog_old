@@ -17,8 +17,7 @@ func ParseContent(fpost *FSPost) error {
         np := NorgParser{ Content: fpost.Content }
         fpost.Content = np.Parse()
         return nil
-        
-        
+
     default: return ExtensionNotSupported
     }
 } 

@@ -68,7 +68,7 @@ func GenerateYearPages(mux *http.ServeMux, processedPosts ProcessedPosts) {
 
 func GeneratePosts(mux *http.ServeMux) []Post {
     paths := FetchPostPaths()
-    posts := make([]Post, len(paths) - 1)
+    posts := make([]Post, 0)
 
     for _, path := range paths {
         fpost := PostFromPath(path)

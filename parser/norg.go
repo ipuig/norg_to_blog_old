@@ -153,7 +153,6 @@ func (np *NorgParser) parseList() {
     matches = re.FindAllString(np.Content, -1)
     for _, match := range matches {
         wrapped := fmt.Sprintf("\n<ul>\n<l%s\n</ul>\n", match[2:])
-        fmt.Println(wrapped)
         np.Content = strings.ReplaceAll(np.Content, match, wrapped)
     }
 }

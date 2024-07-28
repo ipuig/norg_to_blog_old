@@ -12,7 +12,6 @@ func HTML(fp FSPost) template.HTML {
         panic("invalid document")
     }
 
-
     for _, newpath := range fp.CSSFiles {
         positions := strings.Split(newpath, "/")
         filename := "css/" + positions[len(positions) - 1]
@@ -27,6 +26,3 @@ func HTML(fp FSPost) template.HTML {
 
     return template.HTML(fp.Content)
 }
-
-// func imgToFigure() string {
-// }

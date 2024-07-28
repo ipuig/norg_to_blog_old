@@ -9,7 +9,7 @@ import (
 const contentLocationPath = "content/posts"
 
 func FetchPostPaths() []string {
-    years := []string { "2024" }
+    years := []string { "2024", "2025" }
     paths := make([]string, 0)
     for _, year := range years {
         files, err := os.ReadDir(contentLocationPath + "/" + year)

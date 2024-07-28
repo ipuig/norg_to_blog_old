@@ -45,6 +45,7 @@ func ServePostResources(fpost *parser.FSPost) {
     re := regexp.MustCompile(`[2][0][2-9][0-9]`)
     year := re.FindStringSubmatch(fpost.Date)[0]
     if year == "" {
+        fmt.Println("Date wrong format")
         return
     }
 
