@@ -10,5 +10,13 @@ body > header + hr {
 }
 
 article {
-    /* border: 1px solid black; */
+    width: 100%;
+}
+
+body > main > section > article p {
+    padding: 0;
+}
+
+img {
+    width: 80%;
 }

@@ -53,9 +53,9 @@ func (fp *FSPost) Metadata() {
             fp.Date = extractMetadata("date:", line)
         }
 
-        if fp.Title != "" && fp.Date != "" {
+        if strings.HasPrefix(line, "@end") {
             fp.Content = strings.Join(lines[idx+1:], "\n")
-            break
+            break;
         }
     }
 }
