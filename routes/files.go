@@ -1,6 +1,12 @@
 package routes
 
-import "net/http"
+import (
+	"blog/parser"
+	"fmt"
+	"net/http"
+	"regexp"
+	"strings"
+)
 
 var files = map[string]string {
     "/static/css/homepage/styles.css": "./assets/css/homepage/homepage.css",
@@ -22,6 +28,42 @@ func fileHandler(w http.ResponseWriter, r *http.Request) {
         http.ServeFile(w, r, filepath)
     } else {
         http.NotFound(w, r)
+    }
+}
+
+func ServePostResource(fpost parser.FSPost) {
+    title, date := fpost.Metadata()
+    if title == "" || date == "" {
+        fmt.Println("no metadata", fpost.RootPath)
+        return
+    }
+
+    url := regexp.MustCompile(" ").ReplaceAllString(strings.ToLower(title), "-")
+    path := fpost.RootPath
+    alias := "/static/posts"
+
+    re := regexp.MustCompile(`[2][0][2-9][0-9]`)
+    year := re.FindStringSubmatch(date)[0]
+    if year == "" {
+        return
+    }
+
+    if fpost.CSSFiles != nil {
+        for _, css := range fpost.CSSFiles {
+            if css == "" {
+                continue
+            }
+            files[alias + "/" + year + "/" + url + "/css/" + css] = path + "/css/" + css 
+        }
+    }
+
+    if fpost.ImagesPath != nil {
+        for _, img := range fpost.ImagesPath {
+            if img == "" {
+                continue
+            }
+            files[alias + "/" + year + "/" + url + "/img/" + img] = path + "/img/" + img 
+        }
     }
 }
 

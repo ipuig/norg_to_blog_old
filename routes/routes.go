@@ -2,15 +2,13 @@ package routes
 
 import (
 	. "blog/pages"
+	. "blog/parser"
 	"fmt"
 	"net/http"
 )
 
 func Routes() *http.ServeMux {
     mux := http.NewServeMux()
-
-    /* Add Resources */
-    ServeFiles(mux)
 
     /* Generate Posts */
     posts := GeneratePosts(mux)
@@ -21,6 +19,9 @@ func Routes() *http.ServeMux {
 
     /* Generate Year pages */
     GenerateYearPages(mux, processedPosts)
+
+    /* Add Resources */
+    ServeFiles(mux)
     return mux
 }
 
@@ -67,6 +68,12 @@ func GenerateYearPages(mux *http.ServeMux, processedPosts ProcessedPosts) {
 
 func GeneratePosts(mux *http.ServeMux) []Post {
 
+    paths := FetchPostPaths()
+    for _, path := range paths {
+        fpost := PostFromPath(path)
+        ServePostResource(fpost)
+    }
+
     posts := []Post{
         {
             Page: Page{
@@ -93,7 +100,7 @@ func GeneratePosts(mux *http.ServeMux) []Post {
             Date: Date{Year: 2023, Month: 8, Day: 24},
             Abstract: "Lorem ipsum dolor sit amet, officia excepteur ex fugiat reprehenderit enim labore culpa sint ad nisi Lorem pariatur mollit ex esse exercitation amet. Nisi anim cupidatat excepteur officia. Reprehenderit nostrud nostrud ipsum Lorem est aliquip amet voluptate voluptate dolor minim nulla est proident. Nostrud officia pariatur ut officia. Sit irure elit esse ea nulla sunt ex occaecat reprehenderit commodo officia dolor Lorem duis laboris cupidatat officia voluptate. Culpa proident adipisicing id nulla nisi laboris ex in Lorem sunt duis officia eiusmod. Aliqua reprehenderit commodo ex non excepteur duis sunt velit enim. Voluptate laboris sint cupidatat ullamco ut ea consectetur et est culpa et culpa duis.",
         },
-        CreatePostFromHTML("Post from html", "This is a test post that I created from a random html file", []string{"testing", "webdev", "golang"}, Date{Year: 2024, Month: 7, Day: 27}, "content/test.html"),
+        // CreatePostFromHTML("Post from html", "This is a test post that I created from a random html file", []string{"testing", "webdev", "golang"}, Date{Year: 2024, Month: 7, Day: 27}, "content/test.html"),
     }
 
     processedPosts := ProcessPosts(posts)
