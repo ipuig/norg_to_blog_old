@@ -41,6 +41,16 @@ func (np *NorgParser) parseSimple() {
             continue
         }
 
+        if np.Content[np.Idx] == '{' && np.HasNext() {
+            np.Builder.WriteString(np.parseLinkLeft())
+            continue
+        }
+        
+        if np.Content[np.Idx] == '[' && np.HasNext() {
+            np.Builder.WriteString(np.parseLinkRight())
+            continue
+        }
+
         if np.Content[np.Idx] == '`' && np.HasNext() {
             np.Builder.WriteString(np.parseSpan())
             continue
@@ -138,6 +148,67 @@ func (np *NorgParser) parseImage() string {
     }
     np.Idx++
     return "\n<img src=\"" + path.String() + "\">\n"
+}
+
+func (np *NorgParser) parseLinkRight() string {
+    np.Idx++
+    start := np.Idx
+    for np.Content[np.Idx] != ']' && np.HasNext() {
+        np.Idx++
+    }
+
+    if np.Content[np.Idx] != ']' {
+        np.Idx = start
+        return "["
+    }
+
+    alias := np.Content[start:np.Idx]
+    np.Idx++
+
+    if np.Content[np.Idx] != '{' {
+        return "<u>" + alias + "</u>"
+    }
+    
+    np.Idx++
+    start = np.Idx
+    for np.Content[np.Idx] != '}' && np.HasNext() {
+        np.Idx++;
+    }
+    link := np.Content[start:np.Idx]
+    np.Idx++
+
+    return fmt.Sprintf(`<a href="%s">%s</a>`, link, alias)
+}
+
+
+func (np *NorgParser) parseLinkLeft() string {
+    np.Idx++
+    start := np.Idx
+    for np.Content[np.Idx] != '}' && np.HasNext() {
+        np.Idx++
+    }
+
+    if np.Content[np.Idx] != '}' {
+        np.Idx = start
+        return "{"
+    }
+
+    link := np.Content[start:np.Idx]
+    np.Idx++
+
+    if np.Content[np.Idx] != '[' {
+        return fmt.Sprintf(`<a href="%s">%s</a>`, link, link)
+    }
+    
+    np.Idx++
+    start = np.Idx
+    for np.Content[np.Idx] != ']' && np.HasNext() {
+        np.Idx++;
+    }
+    alias := np.Content[start:np.Idx]
+    np.Idx++
+
+    return fmt.Sprintf(`<a href="%s">%s</a>`, link, alias)
 }
 
 func (np *NorgParser) parseList() {
