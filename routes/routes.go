@@ -79,7 +79,9 @@ func GeneratePosts(mux *http.ServeMux) []Post {
             },
             HTML: HTML(fpost),
             Date: DateFromString(fpost.Date),
+            PostTags: fpost.Tags,
             AdditionalCSS: fpost.CSSFiles,
+            Abstract: fpost.Abstract,
         }
         posts = append(posts, post)
     }

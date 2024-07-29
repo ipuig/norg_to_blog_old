@@ -50,7 +50,7 @@ func (p *Post) Template() func (w http.ResponseWriter, r *http.Request) {
 func (p Post) URL() string {
     re := regexp.MustCompile(`(\s+|\s*,\s*)`)
     urlSafeTitle := re.ReplaceAllString(p.Page.Title, "-")
-    return fmt.Sprintf("/posts/%d/%s", p.Date.Year, urlSafeTitle)
+    return fmt.Sprintf("/posts/%d/%s", p.Date.Year, strings.ToLower(urlSafeTitle))
 }
 
 func (p Post) Tags() string {

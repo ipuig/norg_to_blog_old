@@ -9,7 +9,7 @@ import (
 const contentLocationPath = "content/posts"
 
 func FetchPostPaths() []string {
-    years := []string { "2024", "2025" }
+    years := []string { "2024" }
     paths := make([]string, 0)
     for _, year := range years {
         files, err := os.ReadDir(contentLocationPath + "/" + year)
@@ -35,6 +35,8 @@ type FSPost struct {
     Content string
     Title string
     Date string
+    Tags []string
+    Abstract string
 }
 
 func (fp *FSPost) Metadata() {
@@ -44,6 +46,12 @@ func (fp *FSPost) Metadata() {
 
     lines := strings.Split(fp.Content, "\n")
     for idx, line := range lines {
+
+        if strings.HasPrefix(line, "abstract") {
+            fp.Abstract = extractMetadata("abstract:", line)
+            continue
+        }
+
         if strings.HasPrefix(line, "title:") {
             fp.Title = extractMetadata("title:", line)
             continue
@@ -51,6 +59,13 @@ func (fp *FSPost) Metadata() {
 
         if strings.HasPrefix(line, "date:") {
             fp.Date = extractMetadata("date:", line)
+            continue
+        }
+
+        if strings.HasPrefix(line, "tags:") {
+            tags := extractMetadata("tags:", line)
+            fp.Tags = strings.Split(tags, ",")
+            continue
         }
 
         if strings.HasPrefix(line, "@end") {
