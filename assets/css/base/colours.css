@@ -13,6 +13,7 @@
     --gruvbox-light-bg-rgba-3: rgba(189, 174, 147, 0.5);
     --gruvbox-light-bg-rgba-4: rgba(168, 153, 132, 0.5);
 
+
     /* Foreground/text colors */
     --gruvbox-light-fg: #3c3836;
     --gruvbox-light-fg-0: #504945;
@@ -24,5 +25,10 @@
     --gruvbox-blue: #458588;
     --gruvbox-purple: #b16286;
     --gruvbox-aqua: #689d6a;
+
+    --gruvbox-grey: #7c6f64;
+    --gruvbox-grey-rgba: rgba(124, 105, 100, 0.8);
+
     --gruvbox-orange: #d65d0e;
+    --gruvbox-orange-rgba: rgba(214, 93, 14, 0.6);
 }

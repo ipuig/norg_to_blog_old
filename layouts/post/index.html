@@ -23,6 +23,9 @@
             {{ if .HasTags }}
             <span class="tags"> {{ .Tags }} </span>
             {{ end }}
+            {{ if ne .Abstract "" }}
+            <p> {{ .Abstract }} </p>
+            {{ end }}
         </header>
 
         <hr>

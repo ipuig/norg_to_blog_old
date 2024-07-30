@@ -9,18 +9,24 @@ import (
 const contentLocationPath = "content/posts"
 
 func FetchPostPaths() []string {
-    years := []string { "2024" }
     paths := make([]string, 0)
-    for _, year := range years {
-        files, err := os.ReadDir(contentLocationPath + "/" + year)
+
+    dirs, err := os.ReadDir(contentLocationPath)
+    if err != nil {
+        return nil
+    }
+
+
+    for _, dir := range dirs {
+        files, err := os.ReadDir(contentLocationPath + "/" + dir.Name())
         if err != nil {
-            fmt.Println("failed to read posts at", contentLocationPath + "/" + year)
+            fmt.Println("failed to read posts at", contentLocationPath + "/" + dir.Name())
             continue
         }
 
         for _, file := range files {
             if file.IsDir() {
-                paths = append(paths, contentLocationPath + "/" + year + "/" + file.Name())
+                paths = append(paths, contentLocationPath + "/" + dir.Name() + "/" + file.Name())
             }
         }
     }

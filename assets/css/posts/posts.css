@@ -20,3 +20,8 @@ body > main > section > article p {
 img {
     width: 80%;
 }
+
+html > body > main > section > article p a {
+    font-weight: bold;
+    color: var(--gruvbox-orange);
+}

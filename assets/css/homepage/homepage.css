@@ -1,5 +1,9 @@
 @import url('/static/css/base/styles.css');
 
+.date {
+    margin-top: 0.5em;
+}
+
 body > header {
     margin-top: 2em;
 }

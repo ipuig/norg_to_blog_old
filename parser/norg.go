@@ -74,7 +74,7 @@ func (np *NorgParser) Parse() string {
     np.Builder.Reset()
     np.parseList()
     np.parseParagraph()
-    return np.Content
+    return "<article>\n" + np.Content + "\n</article>"
 }
 
 
