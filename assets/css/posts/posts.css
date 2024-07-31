@@ -23,5 +23,6 @@ img {
 
 html > body > main > section > article p a {
     font-weight: bold;
-    color: var(--gruvbox-orange);
+    color: var(--gruvbox-orange-rgba);
+    text-decoration: underline;
 }

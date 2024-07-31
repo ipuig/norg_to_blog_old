@@ -7,25 +7,61 @@ import (
 	"net/http"
 )
 
-func Routes() *http.ServeMux {
-    mux := http.NewServeMux()
+type Router struct {
+    Routes map[string]struct{}
+    Mux *http.ServeMux
+}
+
+func NewRouter() *Router {
+    return &Router{
+        Routes: make(map[string]struct{}),
+        Mux: http.NewServeMux(),
+    }
+}
+
+func (r *Router) AddRoute(endpoint string, resource func(w http.ResponseWriter, r *http.Request)) {
+    r.Routes[endpoint] = struct{}{}
+    r.Mux.HandleFunc(endpoint, resource)
+}
+
+func (r *Router) IsValidRoute(endpoint string) bool {
+    _, ok := r.Routes[endpoint]
+    return ok
+}
+
+func (r *Router) NotFoundPage(url string, w http.ResponseWriter, req *http.Request) {
+    error := ErrorPage{ URL: url }
+    error.WriteError(w)
+    fmt.Fprint(w)
+}
+
+func (r *Router) ServeHTTP(w http.ResponseWriter, req *http.Request) {
+    if r.IsValidRoute(req.URL.Path) {
+        r.Mux.ServeHTTP(w, req)
+    } else {
+        r.NotFoundPage(req.URL.Path, w, req)
+    }
+}
+
+func Routes() *Router {
+    router := NewRouter()
 
     /* Generate Posts */
-    posts := GeneratePosts(mux)
+    posts := GeneratePosts(router)
     processedPosts := ProcessPosts(posts)
 
     /* Generate HomePage */
-    GenerateHomePage(mux, processedPosts)
+    GenerateHomePage(router, processedPosts)
 
     /* Generate Year pages */
-    GenerateYearPages(mux, processedPosts)
+    GenerateYearPages(router, processedPosts)
 
     /* Add Resources */
-    ServeFiles(mux)
-    return mux
+    ServeFiles(router)
+    return router
 }
 
-func GenerateHomePage(mux *http.ServeMux, processedPosts ProcessedPosts) {
+func GenerateHomePage(router *Router, processedPosts ProcessedPosts) {
     home := &Homepage{
         Page: Page{
             Title: "Recent Posts",
@@ -33,10 +69,10 @@ func GenerateHomePage(mux *http.ServeMux, processedPosts ProcessedPosts) {
         Posts: processedPosts.Posts(),
         Author: "Ivan B. Puig",
     }
-    mux.HandleFunc("/", home.Template())
+    router.AddRoute("/", home.Template())
 }
 
-func GenerateYearPages(mux *http.ServeMux, processedPosts ProcessedPosts) {
+func GenerateYearPages(router *Router, processedPosts ProcessedPosts) {
     for year, ps := range processedPosts.ByYear {
 
         yearPage := &Homepage{
@@ -62,11 +98,11 @@ func GenerateYearPages(mux *http.ServeMux, processedPosts ProcessedPosts) {
             yearPage.Page.LeftLateralControl = control
         }
 
-        mux.HandleFunc(fmt.Sprintf("/posts/%d", year), yearPage.Template())
+        router.AddRoute(fmt.Sprintf("/posts/%d", year), yearPage.Template())
     }
 }
 
-func GeneratePosts(mux *http.ServeMux) []Post {
+func GeneratePosts(router *Router) []Post {
     paths := FetchPostPaths()
     posts := make([]Post, 0)
 
@@ -89,7 +125,7 @@ func GeneratePosts(mux *http.ServeMux) []Post {
     posts = processed.Posts()
 
     for _, post := range posts {
-        mux.HandleFunc(post.URL(), post.Template())
+        router.AddRoute(post.URL(), post.Template())
     }
 
     return posts
