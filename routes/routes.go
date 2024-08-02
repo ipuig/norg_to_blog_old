@@ -1,8 +1,8 @@
 package routes
 
 import (
-	. "blog/pages"
-	. "blog/parser"
+	"blog/pages"
+	"blog/parser"
 	"fmt"
 	"net/http"
 )
@@ -30,7 +30,7 @@ func (r *Router) IsValidRoute(endpoint string) bool {
 }
 
 func (r *Router) NotFoundPage(url string, w http.ResponseWriter, req *http.Request) {
-    error := ErrorPage{ URL: url }
+    error := pages.ErrorPage{ URL: url }
     error.WriteError(w)
     fmt.Fprint(w)
 }
@@ -48,7 +48,7 @@ func Routes() *Router {
 
     /* Generate Posts */
     posts := GeneratePosts(router)
-    processedPosts := ProcessPosts(posts)
+    processedPosts := pages.ProcessPosts(posts)
 
     /* Generate HomePage */
     GenerateHomePage(router, processedPosts)
@@ -61,9 +61,9 @@ func Routes() *Router {
     return router
 }
 
-func GenerateHomePage(router *Router, processedPosts ProcessedPosts) {
-    home := &Homepage{
-        Page: Page{
+func GenerateHomePage(router *Router, processedPosts pages.ProcessedPosts) {
+    home := &pages.Homepage{
+        Page: pages.Page{
             Title: "Recent Posts",
         },
         Posts: processedPosts.Posts(),
@@ -72,13 +72,13 @@ func GenerateHomePage(router *Router, processedPosts ProcessedPosts) {
     router.AddRoute("/", home.Template())
 }
 
-func GenerateYearPages(router *Router, processedPosts ProcessedPosts) {
+func GenerateYearPages(router *Router, processedPosts pages.ProcessedPosts) {
     for year, ps := range processedPosts.ByYear {
 
-        yearPage := &Homepage{
-            Page: Page{
+        yearPage := &pages.Homepage{
+            Page: pages.Page{
                 Title: fmt.Sprintf("Posts from %d", year),
-                PathControl: PathControl{
+                PathControl: pages.PathControl{
                     URL: fmt.Sprintf("/posts/%d", year),
                 },
             },
@@ -89,12 +89,12 @@ func GenerateYearPages(router *Router, processedPosts ProcessedPosts) {
         _, previous := processedPosts.ByYear[year - 1]
 
         if previous {
-            control := MakeLateralControl(">", fmt.Sprintf("/posts/%d", year - 1), fmt.Sprintf("Posts from %d", year - 1))
+            control := pages.MakeLateralControl(">", fmt.Sprintf("/posts/%d", year - 1), fmt.Sprintf("Posts from %d", year - 1))
             yearPage.Page.RightLateralControl = control
         }
 
         if next {
-            control := MakeLateralControl("<", fmt.Sprintf("/posts/%d", year + 1), fmt.Sprintf("Posts from %d", year + 1))
+            control := pages.MakeLateralControl("<", fmt.Sprintf("/posts/%d", year + 1), fmt.Sprintf("Posts from %d", year + 1))
             yearPage.Page.LeftLateralControl = control
         }
 
@@ -102,26 +102,26 @@ func GenerateYearPages(router *Router, processedPosts ProcessedPosts) {
     }
 }
 
-func GeneratePosts(router *Router) []Post {
-    paths := FetchPostPaths()
-    posts := make([]Post, 0)
+func GeneratePosts(router *Router) []pages.Post {
+    paths := parser.FetchPostPaths()
+    posts := make([]pages.Post, 0)
 
     for _, path := range paths {
-        fpost := PostFromPath(path)
+        fpost := parser.PostFromPath(path)
         ServePostResources(&fpost)
-        post := Post{
-            Page: Page{
+        post := pages.Post{
+            Page: pages.Page{
                 Title: fpost.Title,
             },
-            HTML: HTML(fpost),
-            Date: DateFromString(fpost.Date),
+            HTML: parser.HTML(fpost),
+            Date: pages.DateFromString(fpost.Date),
             PostTags: fpost.Tags,
             AdditionalCSS: fpost.CSSFiles,
             Abstract: fpost.Abstract,
         }
         posts = append(posts, post)
     }
-    processed := ProcessPosts(posts)
+    processed := pages.ProcessPosts(posts)
     posts = processed.Posts()
 
     for _, post := range posts {

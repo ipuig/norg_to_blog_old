@@ -1,14 +1,14 @@
 package parser
 
 import (
-	. "blog/error"
+	e "blog/error"
 	"strings"
 )
 
 func ParseContent(fpost *FSPost) error {
     f := strings.Split(fpost.Filename, ".")
     if len(f) < 2 {
-        return MissingFileExtension
+        return e.MissingFileExtension
     }
 
     switch f[1] {
@@ -18,6 +18,6 @@ func ParseContent(fpost *FSPost) error {
         fpost.Content = np.Parse()
         return nil
 
-    default: return ExtensionNotSupported
+    default: return e.ExtensionNotSupported
     }
 } 
