@@ -109,15 +109,9 @@ func GeneratePosts(router *Router) []pages.Post {
     for _, path := range paths {
         fpost := parser.PostFromPath(path)
         ServePostResources(&fpost)
-        post := pages.Post{
-            Page: pages.Page{
-                Title: fpost.Title,
-            },
-            HTML: parser.HTML(fpost),
-            Date: pages.DateFromString(fpost.Date),
-            PostTags: fpost.Tags,
-            AdditionalCSS: fpost.CSSFiles,
-            Abstract: fpost.Abstract,
+        post, err := parser.ParseContent(&fpost)
+        if err != nil {
+            continue
         }
         posts = append(posts, post)
     }

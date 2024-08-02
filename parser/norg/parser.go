@@ -1,4 +1,4 @@
-package parser
+package norg
 
 import (
 	"fmt"
@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-type NorgParser struct {
+type Parser struct {
     Idx int
     LastIdx int
     Content string
@@ -18,7 +18,7 @@ func removeLeadingWhiteSpace(content string) string {
     return re.ReplaceAllString(content, "")
 }
 
-func (np *NorgParser) parseSimple() {
+func (np *Parser) parseSimple() {
     np.Idx = 0
     np.Content = removeLeadingWhiteSpace(np.Content)
     np.LastIdx = len(np.Content) - 1
@@ -27,46 +27,51 @@ func (np *NorgParser) parseSimple() {
     for np.Idx <= np.LastIdx {
 
         if np.Content[np.Idx] == '*' && np.HasNext() && np.Content[np.Idx + 1] == '*' {
-            np.Builder.WriteString(np.parseHeading())
+            np.parseHeading()
             continue
         }
 
         if np.Content[np.Idx] == '*' && np.HasNext() {
-            np.Builder.WriteString(np.parseBold())
+            np.parseBold()
             continue
         }
 
         if np.Content[np.Idx] == '_' && np.HasNext() {
-            np.Builder.WriteString(np.parseUnderline())
+            np.parseUnderline()
             continue
         }
 
         if np.Content[np.Idx] == '{' && np.HasNext() {
-            np.Builder.WriteString(np.parseLinkLeft())
+            np.parseLinkLeft()
             continue
         }
         
         if np.Content[np.Idx] == '[' && np.HasNext() {
-            np.Builder.WriteString(np.parseLinkRight())
+            np.parseLinkRight()
             continue
         }
 
         if np.Content[np.Idx] == '`' && np.HasNext() {
-            np.Builder.WriteString(np.parseSpan())
+            np.parseSpan()
             continue
         }
 
         if np.Content[np.Idx] == '.' && np.HasNext() {
-            np.Builder.WriteString(np.parseImage())
+            np.parseImage()
             continue
         }
+
+        // if np.Content[np.Idx] == '@' && np.HasNext() {
+        //     // np.Builder.WriteString(np.parseCode())
+        //     continue
+        // }
 
         np.Builder.WriteByte(np.Content[np.Idx])
         np.Idx++
     }
 }
 
-func (np *NorgParser) Parse() string {
+func (np *Parser) Parse() string {
     np.parseSimple()
     np.Content = np.Builder.String()
     np.Idx = 0
@@ -77,13 +82,11 @@ func (np *NorgParser) Parse() string {
     return "<article>\n" + np.Content + "\n</article>"
 }
 
-
-
-func (np *NorgParser) HasNext() bool {
+func (np *Parser) HasNext() bool {
     return np.Idx < np.LastIdx
 }
 
-func (np *NorgParser) parseHeading() string {
+func (np *Parser) parseHeading() {
     start := np.Idx
     for np.Content[np.Idx] == '*' {
         np.Idx++
@@ -96,10 +99,10 @@ func (np *NorgParser) parseHeading() string {
     }
     heading := np.Content[start:np.Idx]
     np.Idx++
-    return fmt.Sprintf("\n<h%d>%s</h%d>\n\n", level, heading, level)
+    np.Builder.WriteString(fmt.Sprintf("\n<h%d>%s</h%d>\n\n", level, heading, level))
 }
 
-func (np *NorgParser) parseBold() string {
+func (np *Parser) parseBold() {
     np.Idx++
     start := np.Idx
     for np.Content[np.Idx] != '*' {
@@ -107,10 +110,10 @@ func (np *NorgParser) parseBold() string {
     }
     boldText := np.Content[start:np.Idx]
     np.Idx++
-    return "<strong>" + boldText + "</strong>"
+    np.Builder.WriteString("<strong>" + boldText + "</strong>")
 }
 
-func (np *NorgParser) parseUnderline() string {
+func (np *Parser) parseUnderline() {
     np.Idx++
     start := np.Idx
     for np.Content[np.Idx] != '_' {
@@ -118,10 +121,10 @@ func (np *NorgParser) parseUnderline() string {
     }
     boldText := np.Content[start:np.Idx]
     np.Idx++
-    return "<u>" + boldText + "</u>"
+    np.Builder.WriteString("<u>" + boldText + "</u>")
 }
 
-func (np *NorgParser) parseSpan() string {
+func (np *Parser) parseSpan() {
     np.Idx++
     start := np.Idx
     for np.Content[np.Idx] != '`' {
@@ -129,16 +132,17 @@ func (np *NorgParser) parseSpan() string {
     }
     boldText := np.Content[start:np.Idx]
     np.Idx++
-    return `<span class="fmt">` + boldText + "</span>"
+    np.Builder.WriteString(`<span class="fmt">` + boldText + "</span>")
 }
 
-func (np *NorgParser) parseImage() string {
+func (np *Parser) parseImage() {
     np.Idx++
 
     if (np.Idx + 6 ) < np.LastIdx && np.Content[np.Idx:np.Idx+6] == "image " {
         np.Idx += 6
     } else {
-        return "."
+        np.Builder.WriteByte('.');
+        return 
     }
 
     path := strings.Builder{}
@@ -147,10 +151,10 @@ func (np *NorgParser) parseImage() string {
         np.Idx++
     }
     np.Idx++
-    return "\n<img src=\"" + path.String() + "\">\n"
+    np.Builder.WriteString("\n<img src=\"" + path.String() + "\">\n")
 }
 
-func (np *NorgParser) parseLinkRight() string {
+func (np *Parser) parseLinkRight() {
     np.Idx++
     start := np.Idx
     for np.Content[np.Idx] != ']' && np.HasNext() {
@@ -159,14 +163,16 @@ func (np *NorgParser) parseLinkRight() string {
 
     if np.Content[np.Idx] != ']' {
         np.Idx = start
-        return "["
+        np.Builder.WriteByte('[')
+        return
     }
 
     alias := np.Content[start:np.Idx]
     np.Idx++
 
     if np.Content[np.Idx] != '{' {
-        return "<u>" + alias + "</u>"
+        np.Builder.WriteString("<u>" + alias + "</u>")
+        return
     }
     
     np.Idx++
@@ -177,11 +183,11 @@ func (np *NorgParser) parseLinkRight() string {
     link := np.Content[start:np.Idx]
     np.Idx++
 
-    return fmt.Sprintf(`<a href="%s">%s</a>`, link, alias)
+    np.Builder.WriteString(fmt.Sprintf(`<a href="%s">%s</a>`, link, alias))
 }
 
 
-func (np *NorgParser) parseLinkLeft() string {
+func (np *Parser) parseLinkLeft() {
     np.Idx++
     start := np.Idx
     for np.Content[np.Idx] != '}' && np.HasNext() {
@@ -190,14 +196,16 @@ func (np *NorgParser) parseLinkLeft() string {
 
     if np.Content[np.Idx] != '}' {
         np.Idx = start
-        return "{"
+        np.Builder.WriteByte('{')
+        return
     }
 
     link := np.Content[start:np.Idx]
     np.Idx++
 
     if np.Content[np.Idx] != '[' {
-        return fmt.Sprintf(`<a href="%s">%s</a>`, link, link)
+        np.Builder.WriteString(fmt.Sprintf(`<a href="%s">%s</a>`, link, link))
+        return
     }
     
     np.Idx++
@@ -208,10 +216,16 @@ func (np *NorgParser) parseLinkLeft() string {
     alias := np.Content[start:np.Idx]
     np.Idx++
 
-    return fmt.Sprintf(`<a href="%s">%s</a>`, link, alias)
+    np.Builder.WriteString(fmt.Sprintf(`<a href="%s">%s</a>`, link, alias))
 }
 
-func (np *NorgParser) parseList() {
+func (np *Parser) parseMeta() {
+    md := MetadataParser{
+        Content: np.Content,
+    }
+}
+
+func (np *Parser) parseList() {
     re := regexp.MustCompile(`(?m)(^- .*)(\n^[^-\n].*)*`)
     matches := re.FindAllString(np.Content, -1)
 
@@ -228,7 +242,7 @@ func (np *NorgParser) parseList() {
     }
 }
 
-func (np *NorgParser) parseParagraph() {
+func (np *Parser) parseParagraph() {
     for _, paragraph := range strings.Split(np.Content, "\n\n") {
         p := strings.TrimSpace(paragraph)
         if len(p) == 0 || strings.HasPrefix(p, "<") {
