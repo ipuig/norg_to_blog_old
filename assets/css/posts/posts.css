@@ -47,14 +47,20 @@ figure.logo {
     text-align: center;
 }
 
-img {
-    max-height: 7em;
+figure.logo > img {
+    max-height: 6em;
     border-radius: 2em;
-    width: 80%;
 }
 
 html > body > main > section > article p a {
     font-weight: bold;
     color: var(--gruvbox-orange-rgba);
     text-decoration: underline;
+}
+
+@media only screen and (max-width: 750px) {
+    body > header + hr {
+        margin-top: 2em;
+        width: 90%;
+    }
 }

@@ -10,6 +10,10 @@ body {
     font-family: serif;
 }
 
+h1 {
+    text-align: center;
+}
+
 a, p, span, code, b, em, strong {
     text-decoration: none;
     color: var(--gruvbox-light-fg)
@@ -50,17 +54,16 @@ main > section {
     width: 100%;
 }
 
-
 main > aside:first-child {
     grid-area: left;
     align-self: center;
-    left: 10%;
+    left: 5%;
 }
 
 main > aside:last-child {
     grid-area: right;
     align-self: center;
-    right: 10%;
+    right: 5%;
 }
 
 main > aside:first-child, main > aside:last-child {
@@ -144,6 +147,10 @@ footer > nav > ul > li > a > img {
     font-weight: normal;
 }
 
+.path_control {
+    text-align: center;
+}
+
 /* post metadata */
 .date {
     font-style: italic;
@@ -157,4 +164,49 @@ footer > nav > ul > li > a > img {
     font-size: .8em;
     font-weight: bold;
     color: var(--gruvbox-grey-rgba);
+}
+
+@media only screen and (max-width: 1300px) {
+    body {
+        font-size: 16px !important;
+    }
+
+    p {
+        padding: .25em !important;
+    }
+
+    main {
+        gap: 2em !important;
+        padding: .5em !important;
+        width: 90% !important;
+    }
+}
+
+@media only screen and (max-width: 900px) {
+    main {
+        gap: 2em !important;
+    }
+
+    main > aside:first-child {
+        left: 2.5% !important;
+    }
+
+    main > aside:last-child {
+        right: 2.5% !important;
+    }
+
+    .control > div:hover + div {
+        display: none;
+    }
+}
+
+@media only screen and (max-width: 750px) {
+    main {
+        display: block !important;
+        width: 95%;
+    }
+
+    main > aside {
+        display: none !important;
+    }
 }

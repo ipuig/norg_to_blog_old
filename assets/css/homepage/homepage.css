@@ -46,3 +46,22 @@ main > section > a > article > figure.logo > img {
     max-height: 5em;
     border-radius: 1.5em;
 }
+
+@media only screen and (max-width: 750px) {
+    main > section > a > article > hgroup {
+        text-align: center;
+    }
+
+    main > section > a > article > figure.logo > img {
+        max-height: 4em;
+        border-radius: 1.15em;
+    }
+
+    main > section > a > article > hr {
+        width: 80%;
+    }
+
+    main > section > a > article > hr + p {
+        text-align: center;
+    }
+}
