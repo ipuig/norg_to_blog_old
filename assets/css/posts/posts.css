@@ -1,4 +1,5 @@
 @import url('/static/css/base/styles.css');
+@import url('/static/css/post/code.css');
 
 body > header {
     margin-top: 2em;
@@ -15,6 +16,12 @@ article {
 
 body > main > section > article p {
     padding: 0;
+    white-space: pre-line;
+}
+
+body > main > section > article code {
+    display: block;
+    white-space: pre-wrap;
 }
 
 img {

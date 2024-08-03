@@ -12,6 +12,7 @@ var files = map[string]string {
     "/static/css/homepage/styles.css": "./assets/css/homepage/homepage.css",
     "/static/css/base/styles.css": "./assets/css/base/base.css",
     "/static/css/post/styles.css": "./assets/css/posts/posts.css",
+    "/static/css/post/code.css": "./assets/css/posts/code.css",
     "/static/css/error/styles.css": "./assets/css/error/error.css",
     "/static/css/base/colours.css": "./assets/css/base/colours.css",
     "/static/css/base/fonts.css": "./assets/css/base/fonts.css",
