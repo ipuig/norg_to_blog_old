@@ -61,10 +61,10 @@ func (np *Parser) parseSimple() {
             continue
         }
 
-        // if np.Content[np.Idx] == '@' && np.HasNext() {
-        //     // np.Builder.WriteString(np.parseCode())
-        //     continue
-        // }
+        if np.Content[np.Idx] == '@' && np.HasNext() {
+            np.parseMeta()
+            continue
+        }
 
         np.Builder.WriteByte(np.Content[np.Idx])
         np.Idx++
@@ -220,9 +220,18 @@ func (np *Parser) parseLinkLeft() {
 }
 
 func (np *Parser) parseMeta() {
+    np.Idx++;
     md := MetadataParser{
-        Content: np.Content,
+        Content: np.Content[np.Idx:],
+        Ptr: &np.Idx,
     }
+    parsed, err := md.Process()
+    if err != nil {
+        fmt.Println(err)
+        return
+    }
+
+    np.Builder.WriteString(parsed)
 }
 
 func (np *Parser) parseList() {
@@ -248,6 +257,7 @@ func (np *Parser) parseParagraph() {
         if len(p) == 0 || strings.HasPrefix(p, "<") {
             continue;
         }
+
         np.Content = strings.ReplaceAll(np.Content, p, fmt.Sprintf("<p>%s</p>\n", p))
     }
 }
