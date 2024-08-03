@@ -38,6 +38,7 @@ type Post struct {
     Page Page
     AdditionalCSS []string
     HTML template.HTML
+    Logo string
 }
 
 func (p *Post) Template() func (w http.ResponseWriter, r *http.Request) {

@@ -6,13 +6,17 @@ body {
     color: var(--gruvbox-light-fg);
     padding: 0;
     margin: 0;
-    font-family: BlexMono;
     font-size: 20px;
+    font-family: serif;
 }
 
 a, p, span, code, b, em, strong {
     text-decoration: none;
     color: var(--gruvbox-light-fg)
+}
+
+code, h1,h2,h3,h4,h5,h6,.date,.tags,.path_control,aside {
+    font-family: "BlexMono";
 }
 
 p {
@@ -46,11 +50,6 @@ main > section {
     width: 100%;
 }
 
-main > section > a > article {
-    padding: 1em;
-    margin-bottom: 2em;
-    background-color: var(--gruvbox-light-bg-rgba-2);
-}
 
 main > aside:first-child {
     grid-area: left;
@@ -145,19 +144,17 @@ footer > nav > ul > li > a > img {
     font-weight: normal;
 }
 
-
-
 /* post metadata */
 .date {
     font-style: italic;
-    font-size: .9em;
+    font-size: .8em;
     font-weight: bold;
     color: var(--gruvbox-grey-rgba);
 
 }
 
 .tags {
-    font-size: .9em;
+    font-size: .8em;
     font-weight: bold;
     color: var(--gruvbox-grey-rgba);
 }

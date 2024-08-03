@@ -7,11 +7,11 @@
     --gruvbox-light-bg-3: #bdae93;
     --gruvbox-light-bg-4: #a89984;
 
-    --gruvbox-light-bg-rgba-0: rgba(249, 245, 215, 0.5);
-    --gruvbox-light-bg-rgba-1: rgba(235, 219, 178, 0.5);
-    --gruvbox-light-bg-rgba-2: rgba(213, 196, 161, 0.2);
-    --gruvbox-light-bg-rgba-3: rgba(189, 174, 147, 0.5);
-    --gruvbox-light-bg-rgba-4: rgba(168, 153, 132, 0.5);
+    --gruvbox-light-bg-rgba-0: rgba(249, 245, 215, 0.2);
+    --gruvbox-light-bg-rgba-1: rgba(235, 219, 178, 0.1);
+    --gruvbox-light-bg-rgba-2: rgba(213, 196, 161, 0.1);
+    --gruvbox-light-bg-rgba-3: rgba(189, 174, 147, 0.2);
+    --gruvbox-light-bg-rgba-4: rgba(168, 153, 132, 0.2);
 
 
     /* Foreground/text colors */

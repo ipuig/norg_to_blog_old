@@ -76,6 +76,11 @@ func ServePostResources(fpost *parser.FSPost) {
         }
         fpost.ImagesPath = updatedImages
     }
+
+    if fpost.Logo != "" {
+        files[alias + "/" + year + "/" + url + "/img/" + fpost.Logo] = path + "/img/" + fpost.Logo
+        fpost.Logo = alias + "/" + year + "/" + url + "/img/" + fpost.Logo
+    }
 }
 
 func ServeFiles(router *Router) {

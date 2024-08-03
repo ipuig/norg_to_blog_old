@@ -40,6 +40,7 @@ func ParseContent(fpost *FSPost) (pages.Post, error) {
         PostTags: fpost.Tags,
         AdditionalCSS: fpost.CSSFiles,
         Abstract: fpost.Abstract,
+        Logo: fpost.Logo,
     }
 
     return post, nil

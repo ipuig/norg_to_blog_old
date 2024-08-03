@@ -23,6 +23,11 @@
             {{ if .HasTags }}
             <span class="tags"> {{ .Tags }} </span>
             {{ end }}
+            {{ if ne .Logo "" }}
+            <figure class="logo">
+                <img src="{{ .Logo }}">
+            </figure>
+            {{ end }}
             {{ if ne .Abstract "" }}
             <p> {{ .Abstract }} </p>
             {{ end }}

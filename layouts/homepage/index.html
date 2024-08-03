@@ -35,6 +35,11 @@
                             {{ end }}
                         </hgroup>
                         {{ if .HasAbstract }}
+                            {{ if ne .Logo "" }}
+                            <figure class="logo">
+                                <img src="{{ .Logo }}">
+                            </figure>
+                            {{ end }}
                         <hr>
                         <p> {{ .Abstract }} </p>
                         {{ end }}

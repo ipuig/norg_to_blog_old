@@ -70,6 +70,7 @@ func GenerateHomePage(router *Router, processedPosts pages.ProcessedPosts) {
         Author: "Ivan B. Puig",
     }
     router.AddRoute("/", home.Template())
+    router.AddRoute("/posts", home.Template())
 }
 
 func GenerateYearPages(router *Router, processedPosts pages.ProcessedPosts) {

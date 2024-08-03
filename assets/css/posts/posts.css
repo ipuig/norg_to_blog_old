@@ -21,10 +21,35 @@ body > main > section > article p {
 
 body > main > section > article code {
     display: block;
+    width: max-content;
+    height: max-content;
     white-space: pre-wrap;
+    background-color: var(--gruvbox-light-bg-rgba-1);
+    padding-left: .5em;
+    padding-bottom: .5em;
+    padding-right: .5em;
+    border-radius: 1em;
+    margin-bottom: 1em;
+}
+
+body > main > section > article code > p,span {
+    vertical-align: top;
+    margin: 0;
+    padding: 0;
+}
+
+figure {
+    margin: 0;
+}
+
+figure.logo {
+    margin-top: 1em;
+    text-align: center;
 }
 
 img {
+    max-height: 7em;
+    border-radius: 2em;
     width: 80%;
 }
 

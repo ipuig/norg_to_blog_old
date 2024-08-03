@@ -16,6 +16,11 @@ main > section > a > article {
 
     width: 80%;
     margin: 1em auto;
+
+    padding: 1em;
+    margin-bottom: 2em;
+    border-radius: 1em;
+    background-color: var(--gruvbox-light-bg-rgba-2);
 }
 
 main > section > a > article > hgroup {
@@ -35,4 +40,9 @@ main > section > a > article > hgroup > h3 {
 main > section > a > article > hr {
     width: 60%;
     margin-bottom: 0;
+}
+
+main > section > a > article > figure.logo > img {
+    max-height: 5em;
+    border-radius: 1.5em;
 }

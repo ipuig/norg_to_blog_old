@@ -151,7 +151,7 @@ func (np *Parser) parseImage() {
         np.Idx++
     }
     np.Idx++
-    np.Builder.WriteString("\n<img src=\"" + path.String() + "\">\n")
+    np.Builder.WriteString("\n<figure>\n<img src=\"" + path.String() + "\">\n</figure>\n\n")
 }
 
 func (np *Parser) parseLinkRight() {
