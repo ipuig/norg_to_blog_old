@@ -2,6 +2,7 @@ package norg
 
 import (
 	"fmt"
+	"html"
 	"regexp"
 	"strings"
 )
@@ -130,9 +131,9 @@ func (np *Parser) parseSpan() {
     for np.Content[np.Idx] != '`' {
         np.Idx++
     }
-    boldText := np.Content[start:np.Idx]
+    formattedText := np.Content[start:np.Idx]
     np.Idx++
-    np.Builder.WriteString(`<span class="fmt">` + boldText + "</span>")
+    np.Builder.WriteString(`<span class="fmt">` + html.EscapeString(formattedText) + "</span>")
 }
 
 func (np *Parser) parseImage() {
