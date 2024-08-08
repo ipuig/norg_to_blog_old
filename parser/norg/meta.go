@@ -22,7 +22,14 @@ func (mp *MetadataParser) findType() error {
         }
         return nil
     }
-    return e.ParserErrorMetadataUnknownType
+
+    if n >= 5 && mp.Content[0:5] == "table" {
+        mp.Meta = TableParser{
+        	Content: mp.Content[6:],
+        }
+        return nil
+    }
+    return e.NorgParserErrorMetadataUnknownType
 }
 
 func (mp *MetadataParser) Process() (string, error) {

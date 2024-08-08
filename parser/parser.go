@@ -13,7 +13,7 @@ func ParseContent(fpost *FSPost) (pages.Post, error) {
     post := pages.Post{}
     fd := strings.Split(fpost.Filename, ".")
     if len(fd) < 2 {
-        return post, e.MissingFileExtension
+        return post, e.ParserErrorMissingFileExtension
     }
 
     var html template.HTML
@@ -28,7 +28,7 @@ func ParseContent(fpost *FSPost) (pages.Post, error) {
         html = h.HTML(fpost.Content, fpost.CSSFiles, fpost.ImagesPath)
 
     default:
-        return post, e.ExtensionNotSupported
+        return post, e.ParserErrorExtensionNotSupported
     }
 
     post = pages.Post{

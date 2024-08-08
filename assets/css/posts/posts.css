@@ -42,6 +42,12 @@ figure {
     margin: 0;
 }
 
+section > article > figure > img {
+    max-height: 30em;
+    max-width: 30em;
+    border-radius: 1em;
+}
+
 figure.logo {
     margin-top: 1em;
     text-align: center;
