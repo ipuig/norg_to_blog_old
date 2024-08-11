@@ -10,14 +10,16 @@ import (
 
 func main() {
     config.LoadConfig();
-    log.Print(config.SiteConfig)
-    addr := fmt.Sprintf(":%d", config.SiteConfig.Port)
+    addr := fmt.Sprintf("%s:%d", config.SiteConfig.Ip, config.SiteConfig.Port)
 
-    log.Printf("Server running at port %d\n", config.SiteConfig.Port)
-    if config.SiteConfig.CertPath == "" && config.SiteConfig.KeyPath == "" {
-        http.ListenAndServe(addr, routes.Routes())
+    log.Printf("Server running at %s\n", addr)
+    if config.SiteConfig.CertPath != "" && config.SiteConfig.KeyPath != "" {
+        err := http.ListenAndServeTLS(addr, config.SiteConfig.CertPath, config.SiteConfig.KeyPath, routes.Routes())
+        if err != nil {
+            panic(err);
+        }
     } else {
-        http.ListenAndServeTLS(addr, config.SiteConfig.CertPath, config.SiteConfig.KeyPath, routes.Routes())
+        http.ListenAndServe(addr, routes.Routes())
     }
 
 }

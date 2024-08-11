@@ -10,7 +10,6 @@ import (
 
 func FetchPostPaths() []string {
     contentLocationPath := config.SiteConfig.ContentPath
-    fmt.Println(config.SiteConfig.ContentPath)
     paths := make([]string, 0)
 
     dirs, err := os.ReadDir(contentLocationPath)
