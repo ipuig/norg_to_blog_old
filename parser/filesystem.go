@@ -4,11 +4,13 @@ import (
     "fmt"
     "os"
     "strings"
+    "blog/config"
 )
 
-const contentLocationPath = "content/posts"
 
 func FetchPostPaths() []string {
+    contentLocationPath := config.SiteConfig.ContentPath
+    fmt.Println(config.SiteConfig.ContentPath)
     paths := make([]string, 0)
 
     dirs, err := os.ReadDir(contentLocationPath)
@@ -18,6 +20,9 @@ func FetchPostPaths() []string {
 
 
     for _, dir := range dirs {
+        if dir.Name() == ".git" {
+            continue
+        }
         files, err := os.ReadDir(contentLocationPath + "/" + dir.Name())
         if err != nil {
             fmt.Println("failed to read posts at", contentLocationPath + "/" + dir.Name())
