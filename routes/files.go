@@ -4,6 +4,7 @@ import (
 	"blog/parser"
 	"fmt"
 	"net/http"
+	"os"
 	"regexp"
 	"strings"
 )
@@ -32,6 +33,15 @@ func fileHandler(w http.ResponseWriter, r *http.Request) {
         http.NotFound(w, r)
     }
 }
+
+// func robots(w http.ResponseWriter, r *http.Request) {
+//     content, err := os.ReadFile("./assets/robots.txt");
+//     if err != nil {
+//         http.NotFound(w, r)
+//     } else {
+//
+//     }
+// }
 
 func ServePostResources(fpost *parser.FSPost) {
     fpost.Metadata()
@@ -87,4 +97,13 @@ func ServeFiles(router *Router) {
     for path := range files {
         router.AddRoute(path, fileHandler)
     }
+
+    content, err := os.ReadFile("./assets/robots.txt")
+    if err != nil {
+        return
+    }
+
+    router.AddRoute("/robots.txt", func(w http.ResponseWriter, r *http.Request) {
+        fmt.Fprintln(w, string(content))
+    })
 }
