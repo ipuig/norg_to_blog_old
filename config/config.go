@@ -14,6 +14,7 @@ type Config struct {
     Ip string `json:"ip"`
     CertPath string `json:"cert"`
     KeyPath string `json:"key"`
+    Author string `json:"author"`
 }
 
 var SiteConfig Config = Config{

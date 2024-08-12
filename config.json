@@ -1,4 +1,5 @@
 {
     "content_path": "../posts",
-    "port": 80
+    "port": 80,
+    "author": "nwk.me"
 }

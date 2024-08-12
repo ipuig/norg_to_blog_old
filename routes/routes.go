@@ -1,10 +1,11 @@
 package routes
 
 import (
-	"blog/pages"
-	"blog/parser"
-	"fmt"
-	"net/http"
+    "blog/pages"
+    "blog/parser"
+    "fmt"
+    "net/http"
+    "blog/config"
 )
 
 type Router struct {
@@ -67,7 +68,7 @@ func GenerateHomePage(router *Router, processedPosts pages.ProcessedPosts) {
             Title: "Recent Posts",
         },
         Posts: processedPosts.Posts(),
-        Author: "Ivan B. Puig",
+        Author: config.SiteConfig.Author,
     }
     router.AddRoute("/", home.Template())
     router.AddRoute("/posts", home.Template())
