@@ -43,6 +43,10 @@ func ParseContent(fpost *FSPost) (pages.Post, error) {
         Logo: fpost.Logo,
     }
 
+    if fpost.ReleaseDate != "" {
+        post.Release = pages.DateFromString(fpost.ReleaseDate)
+    }
+
     return post, nil
 } 
 

@@ -45,6 +45,7 @@ type FSPost struct {
     Content string
     Title string
     Date string
+    ReleaseDate string
     Tags []string
     Logo string
     Abstract string
@@ -60,6 +61,11 @@ func (fp *FSPost) Metadata() {
 
         if strings.HasPrefix(line, "logo") {
             fp.Logo = extractMetadata("logo:", line)
+            continue
+        }
+
+        if strings.HasPrefix(line, "release_date") {
+            fp.ReleaseDate = extractMetadata("release_date:", line)
             continue
         }
 

@@ -3,10 +3,18 @@
 
 body > header {
     margin-top: 2em;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+body > header p {
+    width: 60%;
+    margin-top: 1em;
 }
 
 body > header + hr {
-    margin-top: 2em;
+    margin-top: 1.5em;
     width: 70%;
 }
 

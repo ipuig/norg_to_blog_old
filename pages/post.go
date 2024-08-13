@@ -16,6 +16,7 @@ type Date struct {
     Month int
     Day int
 }
+
 func DateFromString(date string) Date {
     dateFragments := regexp.MustCompile("[0-3]?[0-9]").FindAllStringSubmatch(date, -1)
     day, _ := strconv.Atoi(dateFragments[0][0])
@@ -30,11 +31,22 @@ func (d Date) Format() string {
     return fmt.Sprintf("%d-%d-%d", d.Day, d.Month, d.Year)
 }
 
+func (d Date) notSpecified() bool {
+    return d.Day == 0 && d.Month == 0 && d.Year == 0;
+}
+
+func (d Date) distance(otherDate Date) int {
+    a := d.Year * 365 + d.Month * 30 + d.Day
+    b := otherDate.Year * 365 + otherDate.Month * 30 + otherDate.Day
+    return b - a;
+}
+
 const PostPath = "layouts/post/index.html"
 type Post struct {
     Abstract string
     PostTags []string
     Date Date
+    Release Date
     Page Page
     AdditionalCSS []string
     HTML template.HTML
@@ -68,6 +80,29 @@ func (p Post) HasCSS() bool {
 
 func (p Post) HasAbstract() bool {
     return p.Abstract != ""
+}
+
+func (p Post) FormatAbstract() template.HTML {
+    if len(p.Abstract) < 115 {
+        return template.HTML(`<p style="text-align: center;"> ` + p.Abstract + " </p>")
+    }
+    return template.HTML("<p> " + p.Abstract + " </p>")
+}
+
+func (p Post) CanBePosted() bool {
+    if p.Release.notSpecified() {
+        return true
+    }
+
+    return p.Date.distance(p.Release) <= 0
+}
+
+func (p Post) DaysToPublish() int {
+    days := p.Date.distance(p.Release)
+    if days <= 0 {
+        return 0
+    }
+    return days
 }
 
 type Posts []Post

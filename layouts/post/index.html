@@ -29,7 +29,7 @@
             </figure>
             {{ end }}
             {{ if ne .Abstract "" }}
-            <p> {{ .Abstract }} </p>
+                {{ .FormatAbstract }}
             {{ end }}
         </header>
 
@@ -44,9 +44,18 @@
                 <article>
                     <h2> Work in progress </h2>
                     <p> I am either testing the blog or about to publish this post </p>
-                <article>
+                </article>
                 {{ else }}
-                {{ .HTML }}
+                    {{ if .CanBePosted }}
+                        {{ .HTML }}
+                    {{ else }}
+                    <article>
+                        <h2> This post is currently locked </h2>
+                        <p> I would really like to show you this write-up, however this machine is still active and according to <br> <a href="https://help.hackthebox.com/en/articles/5188925-streaming-writeups-walkthrough-guidelines"> HTB's terms of service</a>. I must wait for this machine to be retired before publishing. </p>
+                        <p> HTB machines usually remain active for about 6 to 7 months. I've been conservative here so this write-up will be available in {{ .DaysToPublish }} day(s).</p>
+                        <p> Thank you for your understanding. </p>
+                    </article>
+                    {{ end }}
                 {{ end }}
             </section>
             {{ if .Page.HasRightLateralControls }}
