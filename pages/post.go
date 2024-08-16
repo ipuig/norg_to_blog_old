@@ -9,6 +9,7 @@ import (
 	"sort"
 	"strconv"
 	"strings"
+	"time"
 )
 
 type Date struct {
@@ -16,6 +17,8 @@ type Date struct {
     Month int
     Day int
 }
+
+var currentDate int = 0
 
 func DateFromString(date string) Date {
     dateFragments := regexp.MustCompile("[0-3]?[0-9]").FindAllStringSubmatch(date, -1)
@@ -26,7 +29,6 @@ func DateFromString(date string) Date {
     return res
 }
 
-
 func (d Date) Format() string {
     return fmt.Sprintf("%d-%d-%d", d.Day, d.Month, d.Year)
 }
@@ -35,10 +37,19 @@ func (d Date) notSpecified() bool {
     return d.Day == 0 && d.Month == 0 && d.Year == 0;
 }
 
+func (d Date) toDays() int {
+    return d.Year * 365 + d.Month * 30 + d.Day
+}
+
 func (d Date) distance(otherDate Date) int {
-    a := d.Year * 365 + d.Month * 30 + d.Day
-    b := otherDate.Year * 365 + otherDate.Month * 30 + otherDate.Day
-    return b - a;
+    if currentDate == 0 {
+        badFormat := strings.Split(time.Now().Format(time.DateOnly), "-")
+        date := DateFromString(fmt.Sprintf("%s/%s/%s", badFormat[2], badFormat[1], badFormat[0]))
+        currentDate = date.toDays()
+    }
+
+    b := otherDate.toDays()
+    return b - currentDate;
 }
 
 const PostPath = "layouts/post/index.html"
@@ -98,7 +109,14 @@ func (p Post) CanBePosted() bool {
 }
 
 func (p Post) DaysToPublish() int {
-    days := p.Date.distance(p.Release)
+
+    if currentDate == 0 {
+        badFormat := strings.Split(time.Now().Format(time.DateOnly), "-")
+        date := DateFromString(fmt.Sprintf("%s/%s/%s", badFormat[2], badFormat[1], badFormat[0]))
+        currentDate = date.toDays()
+    }
+
+    days := p.Release.toDays() - currentDate
     if days <= 0 {
         return 0
     }

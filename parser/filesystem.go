@@ -17,7 +17,6 @@ func FetchPostPaths() []string {
         return nil
     }
 
-
     for _, dir := range dirs {
         if dir.Name() == ".git" {
             continue

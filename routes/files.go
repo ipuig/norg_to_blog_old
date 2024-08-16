@@ -34,15 +34,6 @@ func fileHandler(w http.ResponseWriter, r *http.Request) {
     }
 }
 
-// func robots(w http.ResponseWriter, r *http.Request) {
-//     content, err := os.ReadFile("./assets/robots.txt");
-//     if err != nil {
-//         http.NotFound(w, r)
-//     } else {
-//
-//     }
-// }
-
 func ServePostResources(fpost *parser.FSPost) {
     fpost.Metadata()
     if fpost.Title == "" || fpost.Date == "" {

@@ -1,11 +1,11 @@
 package routes
 
 import (
-    "blog/pages"
-    "blog/parser"
-    "fmt"
-    "net/http"
-    "blog/config"
+	"blog/config"
+	"blog/pages"
+	"blog/parser"
+	"fmt"
+	"net/http"
 )
 
 type Router struct {
@@ -107,6 +107,7 @@ func GenerateYearPages(router *Router, processedPosts pages.ProcessedPosts) {
 func GeneratePosts(router *Router) []pages.Post {
     paths := parser.FetchPostPaths()
     posts := make([]pages.Post, 0)
+
 
     for _, path := range paths {
         fpost := parser.PostFromPath(path)
