@@ -22,6 +22,8 @@ var files = map[string]string {
     "/static/social/github.svg": "./assets/images/svg/github.svg",
     "/static/social/linkedin.svg": "./assets/images/svg/linkedin.svg",
     "/static/social/htb.svg": "./assets/images/svg/htb.svg",
+
+    "/icon/favicon.ico": "./assets/favicon.ico",
 }
 
 func fileHandler(w http.ResponseWriter, r *http.Request) {
