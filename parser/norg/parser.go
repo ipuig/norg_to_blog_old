@@ -117,7 +117,7 @@ func (np *Parser) parseBold() {
 func (np *Parser) parseUnderline() {
     np.Idx++
     start := np.Idx
-    for np.Content[np.Idx] != '_' {
+    for np.Content[np.Idx] != '_' && np.HasNext() {
         np.Idx++
     }
     boldText := np.Content[start:np.Idx]
